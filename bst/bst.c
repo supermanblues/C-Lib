@@ -1,8 +1,8 @@
 /**
  * @author: waingxiaoqiang
  * @create-date: 2020-04-21
- * @modify-date: 2020-05-06
- * @version: 0.0.7
+ * @modify-date: 2020-05-13
+ * @version: 0.0.8
  * @description: Binary Search Tree Implementation File
  */
 #include <stdio.h>
@@ -11,6 +11,7 @@
 #include <unistd.h>
 
 #include "bst.h"
+#include "../array/array.h"
 #include "../stack/linkstack.h"
 #include "../queue/linkqueue.h"
 
@@ -364,7 +365,7 @@ static void preOrder(struct TreeNode *root, visit *vis)
   if (root == NULL)
     return;
 
-  st = CreateLinkStack(sizeof(struct TreeNode *));
+  st = CreateLinkStack(sizeof cur);
   if (st == NULL)
     return;
 
@@ -403,7 +404,7 @@ static void inOrder(struct TreeNode *root, visit* vis)
   if (root == NULL)
     return;
 
-  st = CreateLinkStack(sizeof(struct TreeNode *));
+  st = CreateLinkStack(sizeof cur);
   if (st == NULL)
     return;
 
@@ -439,6 +440,43 @@ static void postOrder(struct TreeNode *root, visit *vis)
 #else
 static void postOrder(struct TreeNode *root, visit *vis)
 {
+  int i;
+  struct ARRAY *arr = NULL;
+  struct LinkStack *st = NULL;
+  struct TreeNode *cur = NULL;
+
+  if (root == NULL)
+    return;
+
+  st = CreateLinkStack(sizeof cur);
+  if (st == NULL)
+    return;
+
+  arr = CreateArray(100, sizeof cur);
+  if (arr == NULL)
+  {
+    DestroyLinkStack(st);
+    return;
+  }
+
+  st->push(st, &root);
+
+  while (st->pop(st, &cur) == 0)
+  {
+    arr->push_back(arr, &cur);
+    if (cur->left != NULL)
+      st->push(st, &cur->left);
+
+    if (cur->right != NULL)
+      st->push(st, &cur->right);
+  }
+
+  arr->reverse(arr);
+  for (i = 0; i < arr->size(arr); ++i)
+    vis((*(struct TreeNode **) arr->get(arr, i))->data);
+
+  DestroyArray(arr);
+  DestroyLinkStack(st);
 }
 #endif
 

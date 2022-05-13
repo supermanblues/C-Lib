@@ -58,9 +58,10 @@ typedef struct ARRAY
   /** 删除数组中第 index (0-based) 个位置的元素 */
   int (*delete) (struct ARRAY *, int index);
 
+  /** vector-liked */
   int (*push_front) (struct ARRAY *, const void *);
   int (*push_back) (struct ARRAY *, const void *);
-
+  
   int (*pop_front) (struct ARRAY *);
   int (*pop_back) (struct ARRAY *);
 
