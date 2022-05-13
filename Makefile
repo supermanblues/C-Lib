@@ -1,5 +1,5 @@
 CC=clang
-OBJS=main.o llist/llist.o \
+OBJS=main.o array/array.o llist/llist.o \
 		stack/stack.o stack/linkstack.o \
 		queue/queue.o queue/linkqueue.o \
 		bst/bst.o union_find/union_find.o sort/sort.o common/test-utils.o

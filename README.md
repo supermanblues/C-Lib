@@ -1,6 +1,7 @@
 # C-Lib
 #### C语言常见数据结构与算法库
 
+* Dynamic Array
 * Linked List
     - Singly-Linked List
     - Doubly-Linked Circular List

@@ -25,8 +25,16 @@ int cmp_stud(const void *a, const void *b)
   if (s1->math != s2->math)
     return s2->math - s1->math;
 
-  /* 按ID号从小到大排序 */
+  /* 按学号从小到大排序 */
   return (s1->id - s2->id);
+}
+
+void print_int(const void *r)
+{
+  if (r == NULL)
+    return;
+
+  printf("%d ", *(int *) r);
 }
 
 void print_s(const void *r)
