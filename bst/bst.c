@@ -452,7 +452,7 @@ static void postOrder(struct TreeNode *root, visit *vis)
   if (st == NULL)
     return;
 
-  arr = CreateArray(100, sizeof cur);
+  arr = Create_Array(sizeof cur);
   if (arr == NULL)
   {
     DestroyLinkStack(st);
