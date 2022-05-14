@@ -16,7 +16,7 @@
 
 #ifndef __COMPAR_
 #define __COMPAR_
-typedef int compar(const void *, const void *);
+typedef int compar(const void *a, const void *b);
 #endif
 
 #define DATA_SIZE  5

@@ -13,8 +13,9 @@
 #include "../common/test-utils.h"
 
 /* 面向切面（AOP）的编程思想 --- 小型的测试框架 */
-void test_sort(sort *sort)
+void test_sort(struct MySort *ps, SORT_MODE mode)
 {
+  // 调用方法时重新定义测试数据
   int ints[] = { 49, 38, 65, 97, 76, 13, 27, 49, -2, 100, 229 };
   struct Student studs[] = {
       {5, "zhang", 44, 69},
@@ -26,32 +27,30 @@ void test_sort(sort *sort)
   };
 
   size_t num = sizeof(ints) / sizeof(*ints);
-  sort(ints, num, sizeof(*ints), cmp_int);
-  // print_ints(ints, num);
+  ps->sort(ints, num, sizeof(*ints), cmp_int, mode);
   assert( is_sorted(ints, num, sizeof(*ints), cmp_int) );
 
   num = sizeof(studs) / sizeof(*studs);
-  sort(studs, num, sizeof(*studs), cmp_stud);
-  // print_studs(studs, num);
+  ps->sort(studs, num, sizeof(*studs), cmp_stud, mode);
   assert( is_sorted(studs, num, sizeof(*studs), cmp_stud) );
 }
 
 signed main(int argc, char const *argv[])
 { 
-  struct MySort *obj = NULL;
+  struct MySort *ps = NULL;
 
-  obj = CreateMySort();
-  if (obj == NULL)
+  ps = CreateMySort();
+  if (ps == NULL)
   {
-    fprintf(stderr, "The obj create failed, GoodBye!");
+    fprintf(stderr, "The ps create failed, GoodBye!");
     exit(EXIT_FAILURE);
   }
 
-  test_sort(obj->bubble_sort);
-  test_sort(obj->select_sort);
-  test_sort(obj->insert_sort);
-  test_sort(obj->quick_sort);
+  test_sort(ps, BUBBLE_SORT);
+  test_sort(ps, SELECTION_SORT);
+  test_sort(ps, INSERTION_SORT);
+  test_sort(ps, QUICK_SORT);
 
-  DestroyMySort(obj);
+  DestroyMySort(ps);
   return ~~(0 ^ 0);
 }

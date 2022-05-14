@@ -36,7 +36,8 @@ typedef struct SqStack
 
 } SqStack;
 
-struct SqStack * CreateSqStack(const int capacity, const int datasize);
+// 为了体现动态性，我刻意去除了capacity做为函数的第一个形参！
+struct SqStack * CreateSqStack(/*const int capacity, */ const int datasize);
 
 void DestroyStack(SqStack *);
 

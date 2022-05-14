@@ -1,23 +1,17 @@
 /**
  * @author: waingxiaoqiang
  * @create-date: 2020-04-21
- * @modify-date: 2020-05-09
- * @version: 0.0.3
+ * @modify-date: 2020-05-14
+ * @version: 0.0.5
  * @description: Various Sorting Algorithm Implementation File
  */
 #include <stdlib.h>
 #include <string.h>
 
 #include "sort.h"
+
+void sort(void *base, const size_t num, const size_t size, compar *cmp, SORT_MODE mode);
  
-void bubble_sort(void *, const size_t, const size_t, compar *);
-
-void select_sort(void *, const size_t, const size_t, compar *);
-
-void insert_sort(void *, const size_t, const size_t, compar *);
-
-void quick_sort(void *, const size_t, const size_t, compar *);
-
 struct MySort * CreateMySort(void)
 {
   struct MySort *ptr = NULL;
@@ -26,12 +20,7 @@ struct MySort * CreateMySort(void)
   if (ptr == NULL)
     return NULL;
 
-  /* =============== Operations =============== */
-  ptr->bubble_sort = bubble_sort;
-  ptr->select_sort = select_sort;
-  ptr->insert_sort = insert_sort;
-  ptr->quick_sort  = quick_sort;
-
+  ptr->sort = sort;
   return ptr;
 }
 
@@ -47,7 +36,7 @@ static inline void swap(void *a, void *b, size_t size)
   }
 }
 
-void bubble_sort(void *base, const size_t num, const size_t size, compar *cmp)
+static void bubble_sort(void *base, const size_t num, const size_t size, compar *cmp)
 {
   int i, j;
   int exchange;
@@ -69,7 +58,7 @@ void bubble_sort(void *base, const size_t num, const size_t size, compar *cmp)
   }
 }
 
-void select_sort(void *base, const size_t num, const size_t size, compar *cmp)
+static void select_sort(void *base, const size_t num, const size_t size, compar *cmp)
 {
   int i, j, k;
 
@@ -85,7 +74,7 @@ void select_sort(void *base, const size_t num, const size_t size, compar *cmp)
   }
 }
 
-void insert_sort(void *base, const size_t num, const size_t size, compar *cmp)
+static void insert_sort(void *base, const size_t num, const size_t size, compar *cmp)
 {
   int i, j;
   void *tmp = NULL;
@@ -134,9 +123,33 @@ static void q_sort(void *base, int l, int r, const size_t size, compar* cmp)
   q_sort(base, i + 1, r, size, cmp);
 }
 
-void quick_sort(void *base, const size_t num, const size_t size, compar *cmp)
+static void quick_sort(void *base, const size_t num, const size_t size, compar *cmp)
 {
   q_sort(base, 0, num - 1, size, cmp);
+}
+
+void sort(void *base, const size_t num, const size_t size, compar *cmp, SORT_MODE mode)
+{
+  switch (mode)
+  {
+    case BUBBLE_SORT:
+      bubble_sort(base, num, size, cmp);
+      break;
+    case SELECTION_SORT:
+      select_sort(base, num, size, cmp);
+      break;
+    case INSERTION_SORT:
+      insert_sort(base, num, size, cmp);
+      break;
+    case QUICK_SORT:
+      quick_sort(base, num, size, cmp);
+      break;
+    case MERGE_SORT:
+      // TODO: MERGE_SORT
+      break;
+    default:
+      break;
+  }
 }
 
 void DestroyMySort(struct MySort *ptr)

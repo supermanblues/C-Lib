@@ -1,8 +1,8 @@
 /**
  * @author: waingxiaoqiang
  * @create-date: 2020-04-21
- * @modify-date: 2020-05-09
- * @version: 0.0.3
+ * @modify-date: 2020-05-14
+ * @version: 0.0.5
  * @description: Various Sorting Algorithm Header File
  */
 /* ========================== Sorting Start ========================= */
@@ -13,35 +13,23 @@
 #define __COPY_DATA_(dst, src, size) memcpy(dst, src, size)
 #endif
 
-typedef int compar(const void *, const void *);
-typedef void sort(void *base, const size_t, const size_t, compar *);
+#ifndef __COMPAR_
+#define __COMPAR_
+typedef int compar(const void *a, const void *b);
+#endif
+
+typedef enum
+{
+  BUBBLE_SORT,    /** 冒泡排序 */
+  SELECTION_SORT, /** 简单选择排序 */
+  INSERTION_SORT, /** 直接插入排序  */
+  QUICK_SORT,     /** 快速排序 */
+  MERGE_SORT      /** 归并排序 */
+} SORT_MODE;
 
 typedef struct MySort
 {
-  /* 冒泡排序  */
-  sort *bubble_sort;
-
-  /* 简单选择排序 */
-  sort *select_sort;
-
-  /* 直接插入排序 */
-  sort *insert_sort;
-
-  /* 快速排序 */
-  sort *quick_sort;
-
-  /* 归并排序 */
-  sort *merge_sort;
-
-  /* 希尔排序 */
-  sort *shell_sort;
-
-  /* 堆排序 */
-  sort *heap_sort;
-
-  /* 桶排序 */
-  sort *bucket_sort;
-
+  void (*sort) (void *, const size_t, const size_t, compar *, SORT_MODE);
 } MySort;
 
 struct MySort * CreateMySort(void);

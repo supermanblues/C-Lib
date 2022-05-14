@@ -34,7 +34,7 @@ void test_basic(void)
   int i;
   struct ARRAY *arr = NULL;
 
-  arr = CreateArray(10, sizeof(*DATA));
+  arr = Create_Array(sizeof *DATA);
   if (arr == NULL)
   {
     fprintf(stderr, "The arr create failed. GoodBye!");
@@ -58,6 +58,8 @@ void test_basic(void)
 
   for (i = 0; i < DATA_SIZE; ++i)
     assert( __IS_SAME_(arr->get(arr, i), DATA + i, sizeof *DATA) );
+
+  DestroyArray(arr);
 }
 
 void test_insert(void)
@@ -65,7 +67,7 @@ void test_insert(void)
   int i, x;
   struct ARRAY *arr = NULL;
 
-  arr = CreateArray(10, sizeof(*DATA));
+  arr = Create_Array(sizeof *DATA);
   if (arr == NULL)
   {
     fprintf(stderr, "The arr create failed. GoodBye!");
@@ -98,7 +100,7 @@ void test_findAndSort(void)
   int stud_id, stud_math;
   struct Student *s;
 
-  arr = CreateArray(10, sizeof(*STUDS));
+  arr = Create_Array(sizeof *STUDS);
   if (arr == NULL)
   {
     fprintf(stderr, "The arr create failed. GoodBye!");
@@ -117,17 +119,10 @@ void test_findAndSort(void)
 
   stud_math = 67, s = arr->find(arr, &stud_math, stud_math_match);
   assert( __IS_SAME_(s, STUDS + 4, sizeof *s) );
-
-  // sorting before:
-  arr->travel(arr, print_s);
-  fputc(10, stdout);
   
   /* 按数学成绩从高到低排序, 数学成绩相同则按学号从小到大排序 */
-  arr->sort(arr, cmp_stud);
-
-  // sorting after:
-  arr->travel(arr, print_s);
-  fputc(10, stdout);
+  arr->sort(arr, cmp_stud, QUICK_SORT);
+  assert( is_sorted(arr->base, arr->size(arr), arr->datasize, cmp_stud) );
 
   DestroyArray(arr);
 }

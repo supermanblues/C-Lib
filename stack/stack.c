@@ -20,7 +20,7 @@ int st_pop(struct SqStack *, void *);
 
 const void * st_top(struct SqStack *);
 
-struct SqStack * CreateSqStack(const int capacity, const int datasize)
+struct SqStack * CreateSqStack(/*const int capacity,*/ const int datasize)
 {
   struct SqStack *ptr = NULL;
 
@@ -28,7 +28,7 @@ struct SqStack * CreateSqStack(const int capacity, const int datasize)
   if (ptr == NULL)
     return NULL;
 
-  ptr->arr = CreateArray(capacity, datasize);
+  ptr->arr = Create_Array(datasize);
   if (ptr->arr == NULL)
     return NULL;
 

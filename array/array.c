@@ -9,7 +9,6 @@
 #include <string.h>
 
 #include "array.h"
-#include "../sort/sort.h"
 
 int arr_empty(struct ARRAY *);
 int arr_full(struct ARRAY *);
@@ -30,7 +29,7 @@ int arr_pop_front(struct ARRAY *);
 int arr_pop_back(struct ARRAY *);
 
 void arr_travel(struct ARRAY *, void (*visit) (const void *));
-void arr_sort(struct ARRAY *, compar *);
+void arr_sort(struct ARRAY *, compar *, SORT_MODE);
 void arr_reverse(struct ARRAY *);
 
 struct ARRAY * CreateArray(size_t capacity, int datasize)
@@ -57,10 +56,10 @@ struct ARRAY * CreateArray(size_t capacity, int datasize)
   ptr->full  = arr_full;
   ptr->size  = arr_size;
 
-  ptr->get    = arr_get;
-  ptr->front  = arr_front;
-  ptr->back   = arr_back;
-  ptr->rear   = arr_back;
+  ptr->get   = arr_get;
+  ptr->front = arr_front;
+  ptr->back  = arr_back;
+  ptr->rear  = arr_back;
 
   ptr->find   = arr_find;
   ptr->insert = arr_insert;
@@ -214,17 +213,17 @@ void arr_travel(struct ARRAY *ptr, void (*visit) (const void *))
   return;
 }
 
-void arr_sort(struct ARRAY *ptr, compar *cmp)
+void arr_sort(struct ARRAY *ptr, compar *cmp, SORT_MODE mode)
 {
-  struct MySort *sort = NULL;
+  struct MySort *ps = NULL;
 
-  sort = CreateMySort();
-  if (sort == NULL)
+  ps = CreateMySort();
+  if (ps == NULL)
     return;
 
-  sort->quick_sort(ptr->base, ptr->length, ptr->datasize, cmp);
+  ps->sort(ptr->base, ptr->length, ptr->datasize, cmp, mode);
 
-  DestroyMySort(sort);
+  DestroyMySort(ps);
 }
 
 void arr_reverse(struct ARRAY *ptr)

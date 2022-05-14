@@ -1,4 +1,4 @@
-/**
+/*
  * @author: waingxiaoqiang
  * @create-date: 2020-05-13
  * @modify-date: 2020-05-14
@@ -8,6 +8,8 @@
 /* ========================== Dynamic Array Start ========================= */
 #ifndef __ARRAY_H_
 #define __ARRAY_H_
+
+#include "../sort/sort.h"
 
 #ifndef __COMPAR_
 #define __COMPAR_
@@ -22,6 +24,8 @@ typedef int match(const void *key, const void *record);
 #ifndef __COPY_DATA_
 #define __COPY_DATA_(dst, src, size) memcpy(dst, src, size);
 #endif
+
+#define Create_Array(datasize) CreateArray(1, datasize)
 
 typedef struct ARRAY
 {
@@ -77,7 +81,7 @@ typedef struct ARRAY
   void (*travel) (struct ARRAY *, void (*visit) (const void *));
 
   /** 排序数组 */
-  void (*sort) (struct ARRAY *, compar *);
+  void (*sort) (struct ARRAY *, compar *, SORT_MODE);
 
   /** 逆置数组 */
   void (*reverse) (struct ARRAY *);

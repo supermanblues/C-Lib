@@ -90,9 +90,10 @@ void reverse(void *arr, const size_t num, const size_t size)
 
 int is_sorted(const void *data, const size_t num, const size_t size, compar* cmp)
 {
-  int i;
-  for (i = 0; i < num - 1; ++i)
-    if (cmp(data + i * size, data + (i + 1) * size) > 0)
+  const void *p;
+
+  for (p = data; p < data + (num - 1) * size; p += size)
+    if (cmp(p, p + size) > 0)
       return 0;
 
   return 1;
