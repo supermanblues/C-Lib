@@ -142,12 +142,12 @@ int arr_insert(struct ARRAY *ptr, int index, const void *data)
 {
   void *p;
 
-  if (arr_full(ptr))
-    large_(ptr);
-
   /* Be Careful：在数组中最后一个元素后面插入是合法的 */
   if (index < 0 || index > ptr->length)
     return -1;
+
+  if (arr_full(ptr))
+    large_(ptr);
 
   // Move Data
   for (p = ptr->base + (ptr->length - 1) * ptr->datasize;
