@@ -6,10 +6,10 @@
     - Singly-Linked List
     - Doubly-Linked Circular List
 * Stack
-    - Squenece Stack
+    - Squenece Stack (Dynamic Array Based)
     - Linked Stack (Doubly-Linked Circular List Based)
 * Queue
-    - Sequence Queue
+    - Sequence Queue (Dynamic Array Based)
     - Linked Queue (Doubly-Linked Circular List Based)
 * Deque (Doubly-Linked Circular List Based)
 * Binary Search Tree

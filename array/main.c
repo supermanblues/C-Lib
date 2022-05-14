@@ -73,7 +73,7 @@ void test_insert(void)
   }
 
   x = 5;
-  assert( arr->insert(arr, 110, &x) == -2 );
+  assert( arr->insert(arr, 110, &x) == -1 );
   assert( arr->push_front(arr, &x) == 0 );
 
   x = 1;

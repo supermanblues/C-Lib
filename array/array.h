@@ -1,8 +1,8 @@
 /**
  * @author: waingxiaoqiang
  * @create-date: 2020-05-13
- * @modify-date: 2020-05-13
- * @version: 0.0.1
+ * @modify-date: 2020-05-14
+ * @version: 0.0.2
  * @description: Dynamic Array Header File
  */
 /* ========================== Dynamic Array Start ========================= */
@@ -11,7 +11,12 @@
 
 #ifndef __COMPAR_
 #define __COMPAR_
-typedef int compar(const void *, const void *);
+typedef int compar(const void *a, const void *b);
+#endif
+
+#ifndef __MATCH_
+#define __MATCH_
+typedef int match(const void *key, const void *record);
 #endif
 
 #ifndef __COPY_DATA_
@@ -35,27 +40,30 @@ typedef struct ARRAY
   size_t (*size) (struct ARRAY *);
   
   /** 返回数组中第 index (0-based) 个位置元素的内存地址 */
-  const void * (*get) (struct ARRAY *, int);
+  void * (*get) (struct ARRAY *, int);
 
   /** 返回数组中第一个位置元素的内存地址 */
-  const void * (*front) (struct ARRAY *);
+  void * (*front) (struct ARRAY *);
   
   /** 返回数组中最后一个位置元素的内存地址 */
-  const void * (*back) (struct ARRAY *);
+  void * (*back) (struct ARRAY *);
   
   /** 同上 */
-  const void * (*rear) (struct ARRAY *);
+  void * (*rear) (struct ARRAY *);
 
   /* 查找数组元素 */
-  void * (*find) (struct ARRAY *, const void *key, compar *);
+  void * (*find) (struct ARRAY *, const void *key, match *);
 
   /** 
    * 在数组中第 index (0-based) 个位置前插入元素
-   * @return -1: 空间满; -2: index不合法; 0: 插入成功;
+   * @return -1: index不合法; 0: 插入成功; (理论上不存在空间占满的情况)
    **/
   int (*insert) (struct ARRAY *, int index, const void *data);
   
-  /** 删除数组中第 index (0-based) 个位置的元素 */
+  /** 
+   * 删除数组中第 index (0-based) 个位置的元素
+   * @return -1: 空数组; -2: index不合法; 0: 删除成功;
+   **/
   int (*delete) (struct ARRAY *, int index);
 
   /** vector-liked */
@@ -64,10 +72,6 @@ typedef struct ARRAY
   
   int (*pop_front) (struct ARRAY *);
   int (*pop_back) (struct ARRAY *);
-
-  void * (*minimum) (struct ARRAY *);
-
-  void * (*maximum) (struct ARRAY *);
   
   /** 从头至尾（0 ... length - 1）遍历数组 */
   void (*travel) (struct ARRAY *, void (*visit) (const void *));

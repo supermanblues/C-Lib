@@ -1,8 +1,8 @@
 /**
  * @author: waingxiaoqiang
  * @create-date: 2020-05-13
- * @modify-date: 2020-05-13
- * @version: 0.0.1
+ * @modify-date: 2020-05-14
+ * @version: 0.0.2
  * @description: Dynamic Array Implementation File
  */
 #include <stdlib.h>
@@ -15,11 +15,11 @@ int arr_empty(struct ARRAY *);
 int arr_full(struct ARRAY *);
 size_t arr_size(struct ARRAY *);
 
-const void * arr_get(struct ARRAY *, int index);
-const void * arr_front(struct ARRAY *);
-const void * arr_back(struct ARRAY *);
+void * arr_get(struct ARRAY *, int index);
+void * arr_front(struct ARRAY *);
+void * arr_back(struct ARRAY *);
 
-void * arr_find(struct ARRAY *, const void *key, compar *);
+void * arr_find(struct ARRAY *, const void *key, match *);
 
 int arr_insert(struct ARRAY *, int, const void *);
 int arr_delete(struct ARRAY *, int);
@@ -53,9 +53,9 @@ struct ARRAY * CreateArray(size_t capacity, int datasize)
   ptr->capacity = capacity;
 
   /* ================ Operations ================ */
-  ptr->empty  = arr_empty;
-  ptr->full   = arr_full;
-  ptr->size   = arr_size;
+  ptr->empty = arr_empty;
+  ptr->full  = arr_full;
+  ptr->size  = arr_size;
 
   ptr->get    = arr_get;
   ptr->front  = arr_front;
@@ -93,7 +93,7 @@ size_t arr_size(struct ARRAY *ptr)
   return ptr->length;
 }
 
-const void * arr_get(struct ARRAY *ptr, int index)
+void * arr_get(struct ARRAY *ptr, int index)
 {
   if (index < 0 || index >= ptr->length)
     return NULL;
@@ -101,18 +101,18 @@ const void * arr_get(struct ARRAY *ptr, int index)
   return (ptr->base + index * ptr->datasize);
 }
 
-const void * arr_front(struct ARRAY *ptr)
+void * arr_front(struct ARRAY *ptr)
 {
   return arr_get(ptr, 0);
 }
 
-const void * arr_back(struct ARRAY *ptr)
+void * arr_back(struct ARRAY *ptr)
 {
   return arr_get(ptr, ptr->length - 1);
 }
 
-void * arr_find(struct ARRAY *ptr, const void *key, compar *cmp)
-{ // 顺序查找法
+void * arr_find(struct ARRAY *ptr, const void *key, match *match)
+{ // 循序查找法
   int i;
   void *p;
 
@@ -120,11 +120,23 @@ void * arr_find(struct ARRAY *ptr, const void *key, compar *cmp)
        i < ptr->length;
        ++i, p += ptr->datasize)
   {
-    if (cmp(key, p) == 0)
+    if (match(key, p) == 0)
       return p;
   }
 
   return NULL;
+}
+
+static inline void large_(struct ARRAY *ptr)
+{
+  void *new_base = NULL;
+
+  new_base = realloc(ptr->base, (ptr->capacity << 1) * ptr->datasize);
+  if (new_base == NULL)
+    return;
+
+  ptr->base = new_base;
+  ptr->capacity <<= 1;
 }
 
 int arr_insert(struct ARRAY *ptr, int index, const void *data)
@@ -132,15 +144,13 @@ int arr_insert(struct ARRAY *ptr, int index, const void *data)
   void *p;
 
   if (arr_full(ptr))
-  { // TODO: large_(ptr);
-    return -1;
-  }
+    large_(ptr);
 
   /* Be Careful：在数组中最后一个元素后面插入是合法的 */
   if (index < 0 || index > ptr->length)
-    return -2;
+    return -1;
 
-  // Move
+  // Move Data
   for (p = ptr->base + (ptr->length - 1) * ptr->datasize;
        p >= ptr->base + index * ptr->datasize;
        p -= ptr->datasize)
@@ -165,7 +175,21 @@ int arr_push_back(struct ARRAY *ptr, const void *data)
 }
 
 int arr_delete(struct ARRAY *ptr, int index)
-{
+{ // TODO：需要重构此函数
+  int i;
+
+  if (arr_empty(ptr))
+    return -1;
+
+  if (index < 0 || index >= ptr->length)
+    return -2;
+
+  // Move Data
+  for (i = index + 1; i < ptr->length; ++i)
+    __COPY_DATA_(ptr->base + (index - 1) * ptr->datasize,
+        ptr->base + index * ptr->datasize, ptr->datasize);
+
+  --ptr->length;
   return 0;
 }
 
@@ -192,7 +216,6 @@ void arr_travel(struct ARRAY *ptr, void (*visit) (const void *))
 
 void arr_sort(struct ARRAY *ptr, compar *cmp)
 {
-  // qsort(ptr->base, ptr->length, ptr->datasize, cmp);
   struct MySort *sort = NULL;
 
   sort = CreateMySort();
@@ -225,7 +248,7 @@ void arr_reverse(struct ARRAY *ptr)
     __COPY_DATA_(base + (len - 1 - i) * datasize, tmp, datasize);
   }
 
-  return;
+  free(tmp);
 }
 
 void DestroyArray(struct ARRAY *ptr)

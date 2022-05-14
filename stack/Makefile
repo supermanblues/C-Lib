@@ -1,5 +1,5 @@
 CC=clang
-OBJS=main.o stack.o linkstack.o ../llist/llist.o ../common/test-utils.o
+OBJS=main.o stack.o ../array/array.o ../sort/sort.o linkstack.o ../llist/llist.o ../common/test-utils.o
 CFLAGS+=-std=c11 -c -Wall
 
 main:$(OBJS)

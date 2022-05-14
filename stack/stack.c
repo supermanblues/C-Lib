@@ -1,10 +1,26 @@
+/**
+ * @author: waingxiaoqiang
+ * @create-date: 2020-04-21
+ * @modify-date: 2020-05-14
+ * @version: 0.1.0
+ * @description: SqStack Implementation File
+ */
 #include <stdlib.h>
 #include <string.h>
 
 #include "stack.h"
+#include "../array/array.h"
 
-struct SqStack *
-CreateSqStack(const int capacity, const int datasize)
+int st_empty(struct SqStack *);
+int st_full(struct SqStack *);
+size_t st_size(struct SqStack *);
+
+int st_push(struct SqStack *, const void *);
+int st_pop(struct SqStack *, void *);
+
+const void * st_top(struct SqStack *);
+
+struct SqStack * CreateSqStack(const int capacity, const int datasize)
 {
   struct SqStack *ptr = NULL;
 
@@ -12,94 +28,72 @@ CreateSqStack(const int capacity, const int datasize)
   if (ptr == NULL)
     return NULL;
 
-  ptr->base = malloc(capacity * datasize);
-  if (!ptr->base) // 内存分配失败
+  ptr->arr = CreateArray(capacity, datasize);
+  if (ptr->arr == NULL)
     return NULL;
 
-  ptr->top      = ptr->base;
-  ptr->capacity = capacity;
-  ptr->datasize = datasize;
-
   /* =============== Operations ============== */
-  ptr->empty   = StackEmpty;
-  ptr->full    = StackFull;
-  ptr->size    = StackLength;
-  ptr->push    = Push;
-  ptr->pop     = Pop;
-  ptr->get_top = GetTop;
+  ptr->empty = st_empty;
+  ptr->full  = st_full;
+  ptr->size  = st_size;
+  ptr->push  = st_push;
+  ptr->pop   = st_pop;
+  ptr->top   = st_top;
+  ptr->peek  = st_top;
 
   return ptr;
 }
 
-int StackEmpty(struct SqStack *ptr)
+int st_empty(struct SqStack *ptr)
 {
-  return (ptr->top == ptr->base);
+  struct ARRAY *arr = ptr->arr;
+
+  return arr->empty(arr);
 }
 
-int StackFull(struct SqStack *ptr)
+int st_full(struct SqStack *ptr)
 {
-  return (ptr->top - ptr->base == ptr->capacity * ptr->datasize);
+  struct ARRAY *arr = ptr->arr;
+
+  return arr->full(arr);
 }
 
-size_t StackLength(struct SqStack *ptr)
+size_t st_size(struct SqStack *ptr)
 {
-  return (ptr->top - ptr->base) / ptr->datasize;
+  struct ARRAY *arr = ptr->arr;
+
+  return arr->size(arr);
 }
 
-static inline int large_(SqStack* ptr, float factor)
+int st_push(struct SqStack *ptr, const void *data)
 {
-  void *new_base = NULL;
+  struct ARRAY *arr = ptr->arr;
 
-  new_base = realloc(ptr->base, ptr->capacity * factor * ptr->datasize);
-  if (new_base == NULL)
+  return arr->push_back(arr, data);
+}
+
+int st_pop(struct SqStack *ptr, void *data)
+{
+  struct ARRAY *arr = ptr->arr;
+
+  if (arr->empty(arr))
     return -1;
+  
+  if (data != NULL) // 回填数据
+    __COPY_DATA_(data, arr->back(arr), arr->datasize);
 
-  // void *new_base = malloc(ptr->capacity * factor * ptr->datasize);
-  // if (!new_base)
-  //   return -1;
-
-  // memcpy(new_base, ptr->base, ptr->capacity * ptr->datasize); // copy data
-  // free(ptr->base);  /* release old memory spaces! */
-
-  ptr->base = new_base;
-  ptr->top = ptr->base + ptr->capacity * ptr->datasize;
-  ptr->capacity *= factor;
-
-  return 0;
+  return arr->pop_back(arr);
 }
 
-int Push(struct SqStack *ptr, const void *data)
+const void * st_top(struct SqStack *ptr)
 {
-  if (StackFull(ptr))
-    large_(ptr, STACK_LARGE_FACTOR);
+  struct ARRAY *arr = ptr->arr;
 
-  memcpy(ptr->top, data, ptr->datasize);
-  ptr->top += ptr->datasize; /* 栈顶指针向后移动一个位置 */ 
-  return 0;
-}
-
-int Pop(struct SqStack *ptr, void *data)
-{
-  if (StackEmpty(ptr))
-    return -1;
-
-  ptr->top -= ptr->datasize; /* 栈顶指针向前移动一个位置 */
-  if (data != NULL)
-    memcpy(data, ptr->top, ptr->datasize); /* 回填数据 */
-
-  return 0;
-}
-
-const void * GetTop(struct SqStack *ptr)
-{
-  if (StackEmpty(ptr))
-    return NULL;
-
-  return (ptr->top - ptr->datasize);
+  return arr->back(arr);
 }
 
 void DestroyStack(struct SqStack *ptr) 
 {
-  free(ptr->base);
+  DestroyArray(ptr->arr);
   free(ptr);
 }

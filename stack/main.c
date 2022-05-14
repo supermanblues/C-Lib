@@ -1,8 +1,8 @@
 /** 
  * @author: wiangxiaoqiang
- * @version: 0.0.6
+ * @version: 0.0.7
  * @create-date: 2022-04-23
- * @modify-date: 2022-05-11
+ * @modify-date: 2022-05-14
  * @description: SqStack and LinkStack Unit Tests File
  **/
 #include <stdio.h>
@@ -19,7 +19,7 @@ void test_SqStack(void)
   int data[ DATA_SIZE ];
   struct SqStack *st = NULL;
 
-  st = CreateSqStack(2, sizeof(int));
+  st = CreateSqStack(1, sizeof *DATA);
   if (st == NULL)
   {
     fprintf(stderr, "The st create failed. GoodBye!\n");
@@ -28,14 +28,14 @@ void test_SqStack(void)
 
   assert( st->empty(st) );
   assert( st->size(st) == 0 );
-  assert( st->get_top(st) == NULL );
+  assert( st->top(st) == NULL );
 
   for (i = 0; i < sizeof(DATA) / sizeof(*DATA); ++i)
     st->push(st, DATA + i);
 
   assert( !st->empty(st) );
   assert( st->size(st) == DATA_SIZE );
-  assert( *(int *) st->get_top(st) == *(DATA + DATA_SIZE - 1) );
+  assert( *(int *) st->top(st) == *(DATA + DATA_SIZE - 1) );
 
   i = 0;
   while (st->pop(st, data + i++) == 0);
@@ -52,7 +52,7 @@ void test_LinkStack(void)
   struct Student studs[STUD_SIZE];
   struct LinkStack *st = NULL;
 
-  st = CreateLinkStack(sizeof(struct Student));
+  st = CreateLinkStack(sizeof *STUDS);
   if (st == NULL)
   {
     fprintf(stderr, "The st create failed. GoodBye!\n");
