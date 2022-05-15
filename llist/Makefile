@@ -1,6 +1,6 @@
 CC=clang
-OBJS=main.o llist.o ../common/test-utils.o
-CFLAGS+=-std=c11 -c -Wall
+OBJS=main.o slist.o llist.o ../common/test-utils.o
+CFLAGS+=-std=c11 -c -Wall -O2
 
 main:$(OBJS)
 	$(CC) $^ -o $@

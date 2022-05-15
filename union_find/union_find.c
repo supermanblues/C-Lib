@@ -1,73 +1,95 @@
+/**
+ * @author: wangxiaoqiang
+ * @version: 0.0.4
+ * @create-date: 2022-04-25
+ * @modify-date: 2022-05-15
+ * @description: UnionFind Implementation File
+ */
+#include <stdio.h>
 #include <stdlib.h>
 
 #include "union_find.h"
+#include "../array/array.h"
 
-int find(struct UnionFind *, int);
-int unite(struct UnionFind *, int, int);
-int connected(struct UnionFind *, int, int);
-int comp_size(struct UnionFind *);
+size_t uf_size(struct UnionFind *);
+int uf_find(struct UnionFind *, int);
+int uf_unite(struct UnionFind *, int, int);
+int uf_connected(struct UnionFind *, int, int);
 
 struct UnionFind * CreateUnionFind(int initsize)
 {
-  // 守护
+  int i;
+  struct UnionFind *ptr = NULL;
+  struct ARRAY *parents = NULL;
+
   if (initsize <= 0)
+    return NULL; 
+
+  ptr = (struct UnionFind *) malloc(sizeof *ptr);
+  if (ptr == NULL)
     return NULL;
 
-  int i, *p = NULL;
-  struct UnionFind *uf;
-
-  uf = malloc(sizeof *uf);
-  if (uf == NULL)
+  parents = CreateArray(initsize + 1, sizeof(int));
+  if (parents == NULL)
     return NULL;
 
-  p = (int*) malloc((initsize + 1) * sizeof(int));
-  if (p == NULL)
-    return NULL;
-
+  // init union_find
   for (i = 0; i <= initsize; ++i)
-    *(p + i) = i;
+    parents->push_back(parents, &i);
 
-  uf->parents   = p;
-  uf->count     = initsize;
-  uf->find      = find;
-  uf->unite     = unite;
-  uf->connected = connected;
-  uf->comp_size = comp_size;
+  ptr->count     = initsize;
+  ptr->parents   = parents;
 
-  return uf;
+  /* =============== Operations =============== */
+  ptr->size      = uf_size;
+  ptr->find      = uf_find;
+  ptr->unite     = uf_unite;
+  ptr->connected = uf_connected;
+
+  return ptr;
 }
 
-int find(struct UnionFind *uf, int x)
+size_t uf_size(struct UnionFind *ptr)
 {
-  int *p = uf->parents;
-  if (p[x] ^ x) p[x] = find(uf, p[x]);
-  return p[x];
+  return ptr->count;
 }
 
-int unite(struct UnionFind *uf, int u, int v)
+int uf_find(struct UnionFind *ptr, int x)
 {
-  u = find(uf, u), v = find(uf, v);
+  int *pi = NULL;
+  struct ARRAY *parents = NULL;
+
+  parents = ptr->parents;
+  pi = parents->get(parents, x);
+
+  if (*pi ^ x)
+    *pi = uf_find(ptr, *pi);
+  
+  return *pi;
+}
+
+int uf_unite(struct UnionFind *ptr, int u, int v)
+{
+
+  struct ARRAY *parents = NULL;
+
+  u = uf_find(ptr, u), v = uf_find(ptr, v);
   if (u == v)
     return 0;
 
-  uf->parents[u] = v;
-  --uf->count;
+  parents = ptr->parents;
+  *(int *) parents->get(parents, u) = v;
+  --ptr->count;
+
   return 1;
 }
 
-int connected(struct UnionFind *uf, int u, int v)
+int uf_connected(struct UnionFind *ptr, int u, int v)
 {
-  return (find(uf, u) == find(uf, v));
+  return (uf_find(ptr, u) == uf_find(ptr, v));
 }
 
-/**
- * 返回联通分量的数量 
- */
-int comp_size(struct UnionFind *uf)
-{
-  return uf->count;
-}
-
-void DestroyUnionFind(struct UnionFind *uf) {
-  free(uf->parents);
+void DestroyUnionFind(struct UnionFind *ptr) {
+  DestroyArray(ptr->parents);
+  free(ptr);
 }

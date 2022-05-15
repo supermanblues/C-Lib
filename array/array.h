@@ -76,8 +76,11 @@ typedef struct ARRAY
   
   int (*pop_front) (struct ARRAY *);
   int (*pop_back) (struct ARRAY *);
+
+  /** 初始化数组 */
+  void (*init) (struct ARRAY *, const void *);
   
-  /** 从头至尾（0 ... length - 1）遍历数组 */
+  /** 遍历数组 */
   void (*travel) (struct ARRAY *, void (*visit) (const void *));
 
   /** 排序数组 */

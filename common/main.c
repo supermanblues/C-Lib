@@ -1,8 +1,8 @@
 /**
  * @author: waingxiaoqiang
  * @create-date: 2020-05-01
- * @modify-date: 2020-05-11
- * @version: 0.0.5
+ * @modify-date: 2020-05-16
+ * @version: 0.0.7
  * @description: Common Unit Tests File
  */
 #include <stdio.h>
@@ -37,13 +37,13 @@ signed main(int argc, char const *argv[])
   for_(i, 0, DATA_SIZE)
     *(data + i) = *(DATA + i);
 
-  assert( __IS_SAME_(data, DATA, DATA_SIZE * sizeof(*DATA)) );
+  assert( __IS_SAME_(data, DATA, DATA_SIZE * sizeof *data) );
 
   for_prev_(i, DATA_SIZE - 1, ~0)
     *(data + DATA_SIZE - 1 - i) = *(DATA + i);
     
-  reverse(data, DATA_SIZE, sizeof(*data));
-  assert( __IS_SAME_(data, DATA, DATA_SIZE * sizeof(*DATA)) );
+  reverse(data, DATA_SIZE, sizeof *data);
+  assert( __IS_SAME_(data, DATA, DATA_SIZE * sizeof *data) );
 
   fclose(stdin);
   return ~~(0 ^ 0);

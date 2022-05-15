@@ -1,6 +1,6 @@
 CC=clang
 OBJS=main.o array.o ../sort/sort.o ../common/test-utils.o
-CFLAGS+=-std=c11 -c -Wall
+CFLAGS+=-std=c11 -c -Wall -O2
 
 main:$(OBJS)
 	$(CC) $^ -o $@

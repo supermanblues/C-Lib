@@ -48,6 +48,7 @@ void test_SqStack(void)
 
 void test_LinkStack(void)
 {
+
   int i;
   struct Student studs[STUD_SIZE];
   struct LinkStack *st = NULL;

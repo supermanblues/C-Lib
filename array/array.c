@@ -28,6 +28,7 @@ int arr_push_back(struct ARRAY *, const void *);
 int arr_pop_front(struct ARRAY *);
 int arr_pop_back(struct ARRAY *);
 
+void arr_init(struct ARRAY *, const void *);
 void arr_travel(struct ARRAY *, void (*visit) (const void *));
 void arr_sort(struct ARRAY *, compar *, SORT_MODE);
 void arr_reverse(struct ARRAY *);
@@ -46,9 +47,9 @@ struct ARRAY * CreateArray(size_t capacity, int datasize)
   ptr->base = malloc(capacity * datasize);
   if (ptr->base == NULL)
     return NULL;
-
-  ptr->length   = 0;
+  
   ptr->datasize = datasize;
+  ptr->length   = 0;
   ptr->capacity = capacity;
 
   /* ================ Operations ================ */
@@ -70,6 +71,7 @@ struct ARRAY * CreateArray(size_t capacity, int datasize)
   ptr->pop_front  = arr_pop_front;
   ptr->pop_back   = arr_pop_back;
 
+  ptr->init    = arr_init;
   ptr->travel  = arr_travel;
   ptr->sort    = arr_sort;
   ptr->reverse = arr_reverse;
@@ -200,6 +202,16 @@ int arr_pop_front(struct ARRAY *ptr)
 int arr_pop_back(struct ARRAY *ptr)
 {
   return arr_delete(ptr, ptr->length - 1);
+}
+
+void arr_init(struct ARRAY *ptr, const void *data)
+{
+  int i;
+
+  for (i = 0; i < ptr->length; ++i)
+    __COPY_DATA_(ptr->base + i * ptr->datasize, data, ptr->datasize);
+
+  return;
 }
 
 void arr_travel(struct ARRAY *ptr, void (*visit) (const void *))

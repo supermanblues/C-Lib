@@ -3,20 +3,56 @@
  * @create-date: 2020-04-21
  * @modify-date: 2020-05-11
  * @version: 0.0.8
- * @description: Doubly-Linked Circular List Unit Tests File
+ * @description: Singly-Linked List And Doubly-Linked Circular List Unit Tests File
  */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
 
+#include "slist.h"
 #include "llist.h"
 #include "../common/test-utils.h"
 
-void test_mock_stack(void)
+void test_mock_stack_using_slist(void)
 {
-  int i;
-  int data[DATA_SIZE];
+  int i, data[DATA_SIZE];
+  struct SLIST *st = NULL;
+
+  st = slist_create(sizeof *DATA);
+  if (st == NULL)
+  {
+    fprintf(stderr, "The st create failed. GoodBye!\n");
+    exit(EXIT_FAILURE);
+  }
+
+  assert( st->empty(st) );
+  assert( st->size(st) == 0 );
+  assert( st->front(st) == NULL );
+  assert( st->rear(st) == NULL );
+
+  for (i = 0; i < DATA_SIZE; ++i)
+    st->push_front(st, DATA + i);
+
+  assert( !st->empty(st) );
+  assert( st->size(st) == DATA_SIZE );
+
+  assert( __IS_SAME_(st->front(st), DATA + DATA_SIZE - 1, sizeof *data) );
+  assert( __IS_SAME_(st->rear(st), DATA, sizeof *data) );
+
+  i = 0;
+  while (st->pop_front(st, data + i++) == 0)
+    continue;
+
+  reverse(data, DATA_SIZE, sizeof *data);
+  assert( __IS_SAME_(data, DATA, DATA_SIZE * sizeof *data) );
+
+  slist_destroy(st);
+}
+
+void test_mock_stack_using_llist(void)
+{
+  int i, data[DATA_SIZE];
   struct LLIST *st = NULL;
 
   st = llist_create(sizeof *DATA);
@@ -46,6 +82,8 @@ void test_mock_stack(void)
 
   reverse(data, DATA_SIZE, sizeof *DATA);
   assert( __IS_SAME_(data, DATA, DATA_SIZE * sizeof *DATA) );
+
+  llist_destroy(st);
 }
 
 void test_mock_queue(void)
@@ -80,6 +118,8 @@ void test_mock_queue(void)
     continue;
 
   assert( __IS_SAME_(studs, STUDS, STUD_SIZE * sizeof *STUDS) );
+
+  llist_destroy(qu);
 }
 
 void test_mock_deque()
@@ -121,7 +161,9 @@ void test_mock_deque()
 
 signed main(int argc, char const *argv[])
 {
-  test_mock_stack();
+  test_mock_stack_using_slist();
+  test_mock_stack_using_llist();
+  
   test_mock_queue();
   test_mock_deque();
 

@@ -53,7 +53,7 @@ void test_LinkQueue(void)
   struct Student studs[STUD_SIZE];
   struct LinkQueue *q = NULL;
 
-  q = CreateLinkQueue(sizeof(struct Student));
+  q = CreateLinkQueue(sizeof *studs);
   if (q == NULL)
   {
     fprintf(stderr, "The q create failed. GoodBye!\n");
@@ -64,20 +64,23 @@ void test_LinkQueue(void)
   assert( q->size(q) == 0 );
   assert( q->front(q) == NULL );
   assert( q->peek(q) == NULL );
+  assert( q->back(q) == NULL );
+  assert( q->rear(q) == NULL );
 
   for (i = 0; i < STUD_SIZE; ++i)
     q->push(q, STUDS + i);
 
   assert( !q->empty(q) );
   assert( q->size(q) == STUD_SIZE );
-
-  assert( is_same(q->front(q), STUDS, sizeof(struct Student)) );
-  assert( is_same(q->peek(q), STUDS,  sizeof(struct Student)) );
+  assert( is_same(q->front(q), STUDS, sizeof *studs) );
+  assert( is_same(q->peek(q), STUDS,  sizeof *studs) );
+  assert( is_same(q->back(q), STUDS + STUD_SIZE - 1, sizeof *studs) );
+  assert( is_same(q->rear(q), STUDS + STUD_SIZE - 1, sizeof *studs) );
 
   i = 0;
   while (q->pop(q, studs + i++) == 0);
 
-  assert( is_same(studs, STUDS, STUD_SIZE * sizeof(struct Student)) );
+  assert( is_same(studs, STUDS, STUD_SIZE * sizeof *studs) );
 
   DestroyLinkQueue(q);
 }

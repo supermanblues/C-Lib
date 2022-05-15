@@ -57,6 +57,9 @@ typedef struct BST
   /** 求一颗BST树的高度 */
   int (*height) (struct BST *);
 
+  /** 翻转一颗树（Google 面试题） */
+  void (*reverse) (struct BST *);
+
   /** 把一颗BST树变平衡 */
   void (*balance) (struct BST *);
 

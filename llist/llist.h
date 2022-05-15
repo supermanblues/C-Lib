@@ -5,7 +5,7 @@
  * @version: 0.0.3
  * @description: Doubly-Linked Circular List Header File
  */
-/* ========================== LLIST Start ========================= */
+/* ========================== Doubly-Linked Circular List Start ========================= */
 #ifndef __LLIST_H__
 #define __LLIST_H__
 
@@ -48,4 +48,4 @@ void llist_destroy(struct LLIST *);
 void DestroyDeque(DEQUE *);
 
 #endif
-/* ========================== LLIST End ========================= */
+/* ========================== Doubly-Linked Circular List End ========================= */

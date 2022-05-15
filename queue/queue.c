@@ -1,9 +1,9 @@
 /**
  * @author: waingxiaoqiang
  * @create-date: 2020-04-25
- * @modify-date: 2020-05-05
- * @version: 0.0.3
- * @description: SqQueue Implementation File
+ * @modify-date: 2020-05-15
+ * @version: 0.0.5
+ * @description: Sequence Queue Implementation File
  */
 #include <stdlib.h>
 #include <string.h>
@@ -28,34 +28,37 @@ int qu_clear(struct SqQueue *);
 
 struct SqQueue * CreateSqQueue(const int datasize, const size_t capacity)
 {
-  struct SqQueue *qu = NULL;
-
-  qu = (struct SqQueue *) malloc(sizeof *qu);
-  if (qu == NULL)
+  struct SqQueue *ptr = NULL;
+  
+  if (datasize <= 0 || capacity <= 0)
     return NULL;
 
-  qu->base = malloc((capacity + 1) * datasize);
-  if (qu->base == NULL)
+  ptr = (struct SqQueue *) malloc(sizeof *ptr);
+  if (ptr == NULL)
     return NULL;
 
-  qu->front    = 0;
-  qu->rear     = 0;
-  qu->datasize = datasize;
-  qu->capacity = capacity + 1;
+  ptr->base = malloc((capacity + 1) * datasize);
+  if (ptr->base == NULL)
+    return NULL;
+
+  ptr->front    = 0;
+  ptr->rear     = 0;
+  ptr->datasize = datasize;
+  ptr->capacity = capacity + 1;
 
   /* =============== Operations =============== */
-  qu->empty = qu_empty;
-  qu->full  = qu_full;
-  qu->size  = qu_size;
+  ptr->empty = qu_empty;
+  ptr->full  = qu_full;
+  ptr->size  = qu_size;
 
-  qu->get_front = qu_front;
-  qu->get_rear  = qu_rear;
+  ptr->get_front = qu_front;
+  ptr->get_rear  = qu_rear;
 
-  qu->push  = qu_push;
-  qu->pop   = qu_pop;
-  qu->clear = qu_clear;
+  ptr->push  = qu_push;
+  ptr->pop   = qu_pop;
+  ptr->clear = qu_clear;
 
-  return qu;
+  return ptr;
 }
 
 int qu_empty(struct SqQueue *ptr)

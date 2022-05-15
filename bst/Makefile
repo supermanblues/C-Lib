@@ -1,7 +1,8 @@
 CC=clang
-OBJS=main.o bst.o ../array/array.o ../sort/sort.o ../llist/llist.o \
-			../stack/linkstack.o ../queue/linkqueue.o ../common/test-utils.o
-CFLAGS+=-std=c11 -c -Wall
+OBJS=main.o bst.o ../array/array.o ../sort/sort.o \
+			../stack/linkstack.o ../queue/linkqueue.o ../llist/slist.o \
+			../common/test-utils.o
+CFLAGS+=-std=c11 -c -Wall -O2
 
 main:$(OBJS)
 	$(CC) $^ -o $@

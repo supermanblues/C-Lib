@@ -1,9 +1,9 @@
 /**
  * @author: waingxiaoqiang
  * @create-date: 2020-05-02
- * @modify-date: 2020-05-10
- * @version: 0.0.6
- * @description: LinkStack Header File (llist-based)
+ * @modify-date: 2020-05-15
+ * @version: 0.0.7
+ * @description: LinkStack Header File (slist-based)
  */
 /* ========================== LinkStack Start ========================= */
 #ifndef __LINKSTACK_H__
@@ -11,7 +11,7 @@
 
 typedef struct LinkStack
 {
-  struct LLIST *lst;
+  struct SLIST *lst;
 
   int (*empty) (struct LinkStack *);
   size_t (*size) (struct LinkStack *);
@@ -24,7 +24,7 @@ typedef struct LinkStack
 
 } LinkStack;
 
-struct LinkStack * CreateLinkStack(const int datasize);
+struct LinkStack * CreateLinkStack(int datasize);
 
 void DestroyLinkStack(struct LinkStack *);
 

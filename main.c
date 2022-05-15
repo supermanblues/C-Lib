@@ -1,8 +1,8 @@
 /**
  * @author: waingxiaoqiang
  * @create-date: 2020-05-01
- * @modify-date: 2020-05-09
- * @version: 0.0.5
+ * @modify-date: 2020-05-15
+ * @version: 0.0.7
  * @description: Project Integration Tests File
  */
 #include <stdio.h>
@@ -11,6 +11,7 @@
 
 #include "common/common.h"
 #include "array/array.h"
+#include "llist/slist.h"
 #include "llist/llist.h"
 #include "stack/stack.h"
 #include "stack/linkstack.h"
@@ -29,6 +30,8 @@ signed main(int argc, char const *argv[])
   puts("\033[36;5mTesting common     ----- Successfully!");
   sleep(1);
   puts("Testing array      ----- Successfully!");
+  sleep(1);
+  puts("Testing slist      ----- Successfully!");
   sleep(2);
   puts("Testing llist      ----- Successfully!");
   sleep(2);
