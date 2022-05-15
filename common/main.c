@@ -55,7 +55,7 @@ signed main(int argc, char const *argv[])
   assert( a == 1234560 && b == -123456 );
   assert( c == LLONG_MIN && d == LLONG_MAX );
  
-  INT_DATA->travel(INT_DATA, print_int);
+  // INT_DATA->travel(INT_DATA, print_int);
   for_(i, 0, INT_DATA->size(INT_DATA))
     *(data + i) = *(int *) INT_DATA->get(INT_DATA, i);
 
