@@ -41,12 +41,11 @@ void test_mock_stack_using_slist(void)
   assert( __IS_SAME_(st->rear(st), DATA, sizeof *data) );
 
   i = 0;
+  st->reverse(st);
   while (st->pop_front(st, data + i++) == 0)
     continue;
 
-  reverse(data, DATA_SIZE, sizeof *data);
   assert( __IS_SAME_(data, DATA, DATA_SIZE * sizeof *data) );
-
   slist_destroy(st);
 }
 
@@ -86,7 +85,43 @@ void test_mock_stack_using_llist(void)
   llist_destroy(st);
 }
 
-void test_mock_queue(void)
+void test_mock_queue_using_slist(void)
+{
+  int i;
+  struct Student studs[STUD_SIZE];
+  struct SLIST *qu = NULL;
+
+  qu = slist_create(sizeof *STUDS);
+  if (qu == NULL)
+  {
+    fprintf(stderr, "The qu create failed. GoodBye!\n");
+    exit(EXIT_FAILURE);
+  }
+
+  assert( qu->empty(qu) );
+  assert( qu->size(qu) == 0 );
+  assert( qu->front(qu) == NULL );
+  assert( qu->rear(qu) == NULL );
+
+  for (i = 0; i < STUD_SIZE; ++i)
+    qu->push_back(qu, STUDS + i);
+
+  assert( !qu->empty(qu) );
+  assert( qu->size(qu) == STUD_SIZE );
+  assert( __IS_SAME_(qu->front(qu), STUDS, sizeof *STUDS) );
+  assert( __IS_SAME_(qu->back(qu),  STUDS + STUD_SIZE - 1, sizeof *STUDS) );
+  assert( __IS_SAME_(qu->rear(qu),  STUDS + STUD_SIZE - 1, sizeof *STUDS) );
+
+  i = 0;
+  while (qu->pop_front(qu, studs + i++) == 0)
+    continue;
+
+  assert( __IS_SAME_(studs, STUDS, STUD_SIZE * sizeof *studs) );
+
+  slist_destroy(qu);
+}
+
+void test_mock_queue_using_llist(void)
 {
   int i;
   struct Student studs[STUD_SIZE];
@@ -163,8 +198,10 @@ signed main(int argc, char const *argv[])
 {
   test_mock_stack_using_slist();
   test_mock_stack_using_llist();
+
+  test_mock_queue_using_slist();
+  test_mock_queue_using_llist();
   
-  test_mock_queue();
   test_mock_deque();
 
   return ~~(1 ^ 1);

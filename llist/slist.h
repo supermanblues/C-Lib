@@ -9,6 +9,9 @@
 #ifndef __SLIST_H__
 #define __SLIST_H__
 
+#define __SLIST_FOR_EACH_(pos, head) \
+    for (pos = head; pos != NULL; pos = pos->next)
+
 #ifndef __COPY_DATA_
 #define __COPY_DATA_(dst, src, size) memcpy(dst, src, size)
 #endif

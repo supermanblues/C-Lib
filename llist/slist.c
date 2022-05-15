@@ -19,9 +19,9 @@ const void * slist_back(struct SLIST *);
 int slist_push_front(struct SLIST *, const void *);
 int slist_push_back(struct SLIST *, const void *);
 int slist_pop_front(struct SLIST *, void *);
-void slist_travel(struct SLIST *, visit *);
 
-void travel(struct SLIST *, visit *);
+void slist_travel(struct SLIST *, visit *);
+void slist_reverse(struct SLIST *);
 
 struct SLIST * slist_create(int datasize)
 {
@@ -47,7 +47,9 @@ struct SLIST * slist_create(int datasize)
   ptr->push_front = slist_push_front;
   ptr->push_back  = slist_push_back;
   ptr->pop_front  = slist_pop_front;
-  ptr->travel     = slist_travel;
+
+  ptr->travel  = slist_travel;
+  ptr->reverse = slist_reverse;
 
   return ptr;
 }
@@ -155,14 +157,43 @@ void slist_travel(struct SLIST *ptr, visit *visit)
 {
   struct SListNode *cur = NULL;
 
-  for (cur = ptr->head; cur != NULL; cur = cur->next)
+  __SLIST_FOR_EACH_(cur, ptr->head)
     visit(cur->data);
 
   return;
 }
 
+static SListNode * reverse_(struct SListNode *head)
+{
+  struct SListNode *new_head = NULL;
+
+  if (head == NULL || head->next == NULL)
+    return head;
+
+  new_head = reverse_(head->next);
+  head->next->next = head;
+  head->next = NULL;
+
+  return new_head;
+}
+
+void slist_reverse(struct SLIST *ptr)
+{
+  ptr->tail = ptr->head;
+  ptr->head = reverse_(ptr->head);
+}
+
 void slist_destroy(struct SLIST *ptr)
 {
+  struct SListNode *cur = NULL;
+  struct SListNode *nxt = NULL;
+
+  for (cur = ptr->head; cur != NULL; cur = nxt)
+  {
+    nxt = cur->next;
+    free(cur);
+  }
+
   free(ptr);
 }
 

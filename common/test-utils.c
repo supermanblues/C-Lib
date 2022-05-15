@@ -10,6 +10,7 @@
 #include <string.h>
 
 #include "test-utils.h"
+#include "../array/array.h"
 
 int cmp_int(const void *a, const void *b)
 {

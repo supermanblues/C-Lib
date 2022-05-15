@@ -6,7 +6,10 @@
  * @description: Unit Test Hepler Functions Header File
  */
 /* ========================== Test Hepler Functions Start ========================= */
-#ifndef __IS_SAME_
+#ifndef __TEST_HELPER_
+#define __TEST_HELPER_
+
+#ifndef __IS_SAME
 #define __IS_SAME_(a, b, size) ( memcmp(a, b, size) == 0 )
 #endif
 
@@ -40,6 +43,8 @@ static const struct Student STUDS[ STUD_SIZE ] = {
   {5, "stud5", 67, 92}
 };
 
+void init_test_data(void);
+
 int cmp_int(const void *, const void *);
 
 int cmp_stud(const void *, const void *);
@@ -57,4 +62,6 @@ int is_same(const void *p, const void *q, const size_t size);
 void reverse(void *arr, const size_t num, const size_t size);
 
 int is_sorted(const void *data, const size_t num, const size_t size, compar* cmp);
+
+#endif
 /* ========================== Test Hepler Functions End ========================= */
