@@ -16,7 +16,7 @@
 
 void test_mock_stack_using_slist(void)
 {
-  int i, data[DATA_SIZE];
+  int i, data[ DATA_SIZE ];
   struct SLIST *st = NULL;
 
   st = slist_create(sizeof *DATA);
@@ -51,7 +51,7 @@ void test_mock_stack_using_slist(void)
 
 void test_mock_stack_using_llist(void)
 {
-  int i, data[DATA_SIZE];
+  int i, data[ DATA_SIZE ];
   struct LLIST *st = NULL;
 
   st = llist_create(sizeof *DATA);
@@ -88,7 +88,7 @@ void test_mock_stack_using_llist(void)
 void test_mock_queue_using_slist(void)
 {
   int i;
-  struct Student studs[STUD_SIZE];
+  struct Student studs[ STUD_SIZE ];
   struct SLIST *qu = NULL;
 
   qu = slist_create(sizeof *STUDS);

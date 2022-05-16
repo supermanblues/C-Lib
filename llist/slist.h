@@ -1,8 +1,8 @@
 /**
  * @author: waingxiaoqiang
  * @create-date: 2020-05-02
- * @modify-date: 2020-05-15
- * @version: 0.0.1
+ * @modify-date: 2020-05-16
+ * @version: 0.0.2
  * @description: Singly-Linked List Header File
  */
 /* ========================== Singly Linked List Start ========================= */
@@ -16,15 +16,15 @@
 #define __COPY_DATA_(dst, src, size) memcpy(dst, src, size)
 #endif
 
-typedef void visit(const void *);
+typedef int compar(const void *a, const void *b);
+typedef void visit(const void *data);
 
 typedef struct SListNode
 {
-  struct SListNode *next;
-  char data[];
+  struct SListNode *next; /** 指向其直接后继节点的指针域 */
+  char data[];            /** 数据域 */
 } SListNode;
 
-// forward-list
 typedef struct SLIST
 {
   int datasize;
@@ -45,7 +45,7 @@ typedef struct SLIST
 
   void (*travel) (struct SLIST *, visit *);
   void (*reverse) (struct SLIST *);
-  void (*sort) (struct SLIST *);
+  void (*sort) (struct SLIST *, compar *);
 
 } SLIST;
 

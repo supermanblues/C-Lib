@@ -9,4 +9,14 @@ main:$(OBJS)
 	$(CC) $(CFLAGS) $^ -o $@
 
 clean:
-	$(RM) -r $(OBJS) main
+	$(RM) -r $(OBJS) *.a main
+
+package:
+	$(MAKE) clean
+	$(MAKE)
+	
+	ar -r libslist.a ../llist/slist.o
+	ar -r libllist.a ../llist/llist.o
+
+	cp slist.h llist.h /usr/local/include/
+	cp libslist.a libllist.a /usr/local/lib/
