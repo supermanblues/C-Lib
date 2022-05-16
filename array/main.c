@@ -11,6 +11,7 @@
 #include <assert.h>
 
 #include "array.h"
+#include "../sort/sort.h"
 #include "../common/test-utils.h"
 
 static int stud_id_match(const void *key, const void *record)

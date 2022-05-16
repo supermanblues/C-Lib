@@ -1,14 +1,15 @@
 /**
  * @author: waingxiaoqiang
  * @create-date: 2020-05-13
- * @modify-date: 2020-05-14
- * @version: 0.0.2
+ * @modify-date: 2020-05-16
+ * @version: 0.0.3
  * @description: Dynamic Array Implementation File
  */
 #include <stdlib.h>
 #include <string.h>
 
 #include "array.h"
+#include "../sort/sort.h"
 
 int arr_empty(struct ARRAY *);
 int arr_full(struct ARRAY *);
@@ -30,7 +31,7 @@ int arr_pop_back(struct ARRAY *);
 
 void arr_init(struct ARRAY *, const void *);
 void arr_travel(struct ARRAY *, void (*visit) (const void *));
-void arr_sort(struct ARRAY *, compar *, SORT_MODE);
+void arr_sort(struct ARRAY *, compar *, int);
 void arr_reverse(struct ARRAY *);
 
 struct ARRAY * CreateArray(size_t capacity, int datasize)
@@ -225,7 +226,7 @@ void arr_travel(struct ARRAY *ptr, void (*visit) (const void *))
   return;
 }
 
-void arr_sort(struct ARRAY *ptr, compar *cmp, SORT_MODE mode)
+void arr_sort(struct ARRAY *ptr, compar *cmp, int mode)
 {
   struct MySort *ps = NULL;
 

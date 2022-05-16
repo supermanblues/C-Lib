@@ -9,4 +9,14 @@ main:$(OBJS)
 	$(CC) $(CFLAGS) $^ -o $@
 
 clean:
-	$(RM) -r $(OBJS) main
+	$(RM) -r $(OBJS) *.a main
+
+package:
+	$(MAKE) clean
+	$(MAKE)
+
+	ar -r libarray.a array.o
+	ar -r libsort.a ../sort/sort.o
+
+	cp array.h ../sort/sort.h /usr/local/include/
+	cp libarray.a libsort.a /usr/local/lib/

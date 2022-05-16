@@ -15,103 +15,99 @@
 #include "../stack/linkstack.h"
 #include "../queue/linkqueue.h"
 
-int size(struct BST *);
-int empty(struct BST *);
-void draw(struct BST *);
+int bst_size(struct BST *);
+int bst_empty(struct BST *);
+void bst_draw(struct BST *);
 
-const void * search(struct BST *, const void *);
+const void * bst_search(struct BST *, const void *);
 
-int insert(struct BST *, const void *, const void *);
-int delete(struct BST *, const void *);
+int bst_insert(struct BST *, const void *, const void *);
+int bst_delete(struct BST *, const void *);
 
-const void * maximum(struct BST *);
-const void * minimum(struct BST *);
+const void * bst_maximum(struct BST *);
+const void * bst_minimum(struct BST *);
 
-int height(struct BST *);
-
-void balance(struct BST *);
-
-void travel(struct BST *, BST_TRAVEL_MODE mode);
+int bst_height(struct BST *);
+void bst_balance(struct BST *);
+void bst_travel(struct BST *, BST_TRAVEL_MODE mode);
 
 static const void *
-search_(struct TreeNode *, const void *, compare *);
+bst_search_(struct TreeNode *, const void *, compare *);
 
 static int
-insert_(struct TreeNode **, const void *, const void *,  const size_t, compare *);
+bst_insert_(struct TreeNode **, const void *, const void *,  const size_t, compare *);
 
 static struct TreeNode *
-delete_(struct TreeNode *, const void *, compare *);
+bst_delete_(struct TreeNode *, const void *, compare *);
 
 static int
-size_(struct TreeNode *);
+bst_size_(struct TreeNode *);
 
 static struct TreeNode *
-maximum_(struct TreeNode *);
+bst_maximum_(struct TreeNode *);
 
 static struct TreeNode *
-minimum_(struct TreeNode *);
+bst_minimum_(struct TreeNode *);
 
 static int
-height_(struct TreeNode *);
+bst_height_(struct TreeNode *);
 
 static void
-balance_(struct TreeNode **);
+bst_balance_(struct TreeNode **);
 
 static void
-turn_left(struct TreeNode **);
+bst_turn_left(struct TreeNode **);
 
 static void
-turn_right(struct TreeNode **);
+bst_turn_right(struct TreeNode **);
 
-struct BST * CreateBST(const size_t datasize, compare *cmp, visit *vis)
+struct BST * CreateBST(int datasize, compare *cmp, visit *vis)
 {
-  // 守护
+  struct BST *bst = NULL;
+
   if (datasize <= 0 || cmp == NULL)
     return NULL;
-
-  struct BST *bst = NULL;
 
   bst = (struct BST *) malloc(sizeof *bst);
   if (bst == NULL)
     return NULL;
 
-  bst->root  = NULL;
-
-  bst->cmp = cmp;
-  bst->vis = vis;
+  bst->root = NULL;
+  bst->cmp  = cmp;
+  bst->vis  = vis;
   bst->datasize = datasize;
 
   /* =============== Operations =============== */
-  bst->size    = size;
-  bst->empty   = empty;
-  bst->draw    = draw;
-  bst->search  = search;
-  bst->insert  = insert;
-  bst->delete  = delete;
-  bst->maximum = maximum;
-  bst->minimum = minimum;
-  bst->height  = height;
-  bst->balance = balance;
-  bst->travel  = travel;
+  bst->size    = bst_size;
+  bst->empty   = bst_empty;
+  bst->draw    = bst_draw;
+  bst->search  = bst_search;
+  bst->insert  = bst_insert;
+  bst->delete  = bst_delete;
+  bst->maximum = bst_maximum;
+  bst->minimum = bst_minimum;
+  bst->height  = bst_height;
+  bst->balance = bst_balance;
+  bst->travel  = bst_travel;
 
   return bst;
 }
 
-int size(struct BST *bst)
+int bst_size(struct BST *bst)
 {
-  return size_(bst->root);
+  return bst_size_(bst->root);
 }
 
-static int size_(struct TreeNode *root)
+static int bst_size_(struct TreeNode *root)
 {
   if (root == NULL)
     return 0;
 
-  return size_(root->left) + 1 + size_(root->right);
+  return bst_size_(root->left) + 1 + bst_size_(root->right);
 }
 
 /* 比函数将来必改 */
-static void draw_(struct TreeNode *root, int d, int l, int r)
+static void bst_draw_(struct TreeNode *root, int d, int l, int r)
 {
   if (root == NULL)
     return;
@@ -123,35 +119,35 @@ static void draw_(struct TreeNode *root, int d, int l, int r)
   fflush(stdout);
   sleep(1);
   
-  draw_(root->left,  d + 1, l, mid - 1);
-  draw_(root->right, d + 1, mid + 1, r);
+  bst_draw_(root->left,  d + 1, l, mid - 1);
+  bst_draw_(root->right, d + 1, mid + 1, r);
 }
 
-void draw(struct BST *bst)
+void bst_draw(struct BST *bst)
 {
   if (bst->root == NULL)
     return;
 
-  int h = height_(bst->root);
+  int h = bst_height_(bst->root);
   int w = (1 << h) - 1;
 
   printf("\033[1;80H\033[32;3;5mBinary Search Tree:\033[0m");
-  draw_(bst->root, 1, 0, w - 1);
+  bst_draw_(bst->root, 1, 0, w - 1);
   fputc(10, stdout);
 }
 
-int empty(struct BST *bst)
+int bst_empty(struct BST *bst)
 {
   return (bst->root == NULL);
 }
 
-const void * search(struct BST *bst, const void *key)
+const void * bst_search(struct BST *bst, const void *key)
 {
-  return search_(bst->root, key, bst->cmp);
+  return bst_search_(bst->root, key, bst->cmp);
 }
 
 static const void *
-search_(struct TreeNode *root, const void *key, compare *cmp)
+bst_search_(struct TreeNode *root, const void *key, compare *cmp)
 {
 
   int sub;
@@ -163,20 +159,20 @@ search_(struct TreeNode *root, const void *key, compare *cmp)
   if (sub == 0)
     return root->data;
 
-  return (sub < 0 ? search_(root->left, key, cmp)
-      : search_(root->right, key, cmp));
+  return (sub < 0 ? bst_search_(root->left, key, cmp)
+      : bst_search_(root->right, key, cmp));
 }
 
-int delete(struct BST *bst, const void *key)
+int bst_delete(struct BST *bst, const void *key)
 {
-  if (search_(bst->root, key, bst->cmp) == NULL)
+  if (bst_search_(bst->root, key, bst->cmp) == NULL)
     return -1;
 
-  bst->root = delete_(bst->root, key, bst->cmp);
+  bst->root = bst_delete_(bst->root, key, bst->cmp);
   return 0;
 }
 
-static struct TreeNode * delete_(struct TreeNode *root, const void *key, compare *cmp)
+static struct TreeNode * bst_delete_(struct TreeNode *root, const void *key, compare *cmp)
 {
 
   int sub;
@@ -187,12 +183,12 @@ static struct TreeNode * delete_(struct TreeNode *root, const void *key, compare
   sub = cmp(key, root->data);
   if (sub < 0)
   {
-    root->left = delete_(root->left, key, cmp);
+    root->left = bst_delete_(root->left, key, cmp);
     return root;
   }
   if (sub > 0)
   {
-    root->right = delete_(root->right, key, cmp);
+    root->right = bst_delete_(root->right, key, cmp);
     return root;
   }
 
@@ -205,19 +201,19 @@ static struct TreeNode * delete_(struct TreeNode *root, const void *key, compare
   }
 
   ptr = root->right;
-  minimum_(ptr)->left = root->left;
+  bst_minimum_(ptr)->left = root->left;
   root->left = root->right = NULL;
   free(root);
 
   return ptr;
 }
 
-int insert(struct BST *bst, const void *key, const void *data)
+int bst_insert(struct BST *bst, const void *key, const void *data)
 {
-  return insert_(&bst->root, key, data, bst->datasize, bst->cmp);
+  return bst_insert_(&bst->root, key, data, bst->datasize, bst->cmp);
 }
 
-static int insert_(struct TreeNode **root,
+static int bst_insert_(struct TreeNode **root,
                    const void *key,
                    const void *data,
                    const size_t datasize,
@@ -227,7 +223,7 @@ static int insert_(struct TreeNode **root,
 
   if (*root == NULL)
   {
-    *root = malloc(sizeof(**root) + datasize);
+    *root = (struct TreeNode *) malloc(sizeof(**root) + datasize);
     if (*root == NULL)
       return -1;
 
@@ -242,66 +238,66 @@ static int insert_(struct TreeNode **root,
   if (sub == 0)
     return -2; // 插入重复数据
 
-  return (sub < 0 ? insert_(&(*root)->left, key, data, datasize, cmp)
-        : insert_(&(*root)->right, key, data, datasize, cmp));
+  return (sub < 0 ? bst_insert_(&(*root)->left, key, data, datasize, cmp)
+        : bst_insert_(&(*root)->right, key, data, datasize, cmp));
 }
 
-const void * maximum(struct BST *bst)
+const void * bst_maximum(struct BST *bst)
 {
-  if (empty(bst))
+  if (bst_empty(bst))
     return NULL;
 
-  return maximum_(bst->root)->data;
+  return bst_maximum_(bst->root)->data;
 }
 
-const void * minimum(struct BST *bst)
+const void * bst_minimum(struct BST *bst)
 {
-  if (empty(bst))
+  if (bst_empty(bst))
     return NULL;
 
-  return minimum_(bst->root)->data;
+  return bst_minimum_(bst->root)->data;
 }
 
-static struct TreeNode * maximum_(struct TreeNode *root)
+static struct TreeNode * bst_maximum_(struct TreeNode *root)
 {
   if (root == NULL || root->right == NULL)
     return root;
 
-  return maximum_(root->right);
+  return bst_maximum_(root->right);
 }
 
-static struct TreeNode * minimum_(struct TreeNode *root)
+static struct TreeNode * bst_minimum_(struct TreeNode *root)
 {
   if (root == NULL || root->left == NULL)
     return root;
 
-  return minimum_(root->left);
+  return bst_minimum_(root->left);
 }
 
-int height(struct BST *bst)
+int bst_height(struct BST *bst)
 {
-  return height_(bst->root);
+  return bst_height_(bst->root);
 }
 
-static int height_(struct TreeNode *root)
+static int bst_height_(struct TreeNode *root)
 {
   int lh, rh;
 
   if (root == NULL)
     return 0;
 
-  lh = height_(root->left);
-  rh = height_(root->right);
+  lh = bst_height_(root->left);
+  rh = bst_height_(root->right);
 
   return 1 + (lh > rh ? lh : rh);
 }
 
-void balance(struct BST *bst)
+void bst_balance(struct BST *bst)
 {
-  balance_(&bst->root);
+  bst_balance_(&bst->root);
 }
 
-static void balance_(struct TreeNode **root)
+static void bst_balance_(struct TreeNode **root)
 {
   int sub;
 
@@ -310,21 +306,21 @@ static void balance_(struct TreeNode **root)
 
   while (1)
   {
-    sub = size_((*root)->left) - size_((*root)->right);
+    sub = bst_size_((*root)->left) - bst_size_((*root)->right);
     if (sub >= -1 && sub <= 1)
       break;
 
     if (sub < -1) /* 右子树重，进行左旋 */
-      turn_left(root);
+      bst_turn_left(root);
     else          /* 左子树重，进行右旋 */
-      turn_right(root);
+      bst_turn_right(root);
   }
 
-  balance_(&(*root)->left);
-  balance_(&(*root)->right);
+  bst_balance_(&(*root)->left);
+  bst_balance_(&(*root)->right);
 }
 
-static void turn_left(struct TreeNode **root)
+static void bst_turn_left(struct TreeNode **root)
 {
   struct TreeNode *cur = NULL;
 
@@ -332,10 +328,10 @@ static void turn_left(struct TreeNode **root)
   *root = cur->right;
   cur->right = NULL;
 
-  minimum_(*root)->left = cur;
+  bst_minimum_(*root)->left = cur;
 }
 
-static void turn_right(struct TreeNode **root)
+static void bst_turn_right(struct TreeNode **root)
 {
   struct TreeNode *cur = NULL;
 
@@ -343,7 +339,7 @@ static void turn_right(struct TreeNode **root)
   *root = cur->left;
   cur->left = NULL;
 
-  maximum_(*root)->right = cur;
+  bst_maximum_(*root)->right = cur;
 }
 
 #ifndef __bst_preorder_iter_impl
@@ -506,7 +502,7 @@ static void levelOrder(struct TreeNode *root, visit *vis)
   DestroyLinkQueue(qu);
 }
 
-void travel(struct BST *bst, BST_TRAVEL_MODE mode)
+void bst_travel(struct BST *bst, BST_TRAVEL_MODE mode)
 {
   if (bst->root == NULL || bst->vis == NULL)
     return;

@@ -3,7 +3,7 @@
  * @create-date: 2020-05-02
  * @modify-date: 2020-05-10
  * @version: 0.0.6
- * @description: LinkStack Implementation File (llist-based)
+ * @description: LinkStack Implementation File (slist-based)
  */
 #include <stdlib.h>
 

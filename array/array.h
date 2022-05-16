@@ -1,15 +1,13 @@
 /*
  * @author: waingxiaoqiang
  * @create-date: 2020-05-13
- * @modify-date: 2020-05-14
- * @version: 0.0.2
+ * @modify-date: 2020-05-16
+ * @version: 0.0.3
  * @description: Dynamic Array Header File
  */
 /* ========================== Dynamic Array Start ========================= */
 #ifndef __ARRAY_H_
 #define __ARRAY_H_
-
-#include "../sort/sort.h"
 
 #ifndef __COMPAR_
 #define __COMPAR_
@@ -84,7 +82,7 @@ typedef struct ARRAY
   void (*travel) (struct ARRAY *, void (*visit) (const void *));
 
   /** 排序数组 */
-  void (*sort) (struct ARRAY *, compar *, SORT_MODE);
+  void (*sort) (struct ARRAY *, compar *, int);
 
   /** 逆置数组 */
   void (*reverse) (struct ARRAY *);

@@ -28,7 +28,7 @@ typedef struct TreeNode
 typedef struct BST
 {
   struct TreeNode *root;
-  size_t datasize;
+  int datasize;
 
   visit *vis;   /* 访问BST中节点数据的回调函数 */
   compare *cmp;
@@ -68,8 +68,7 @@ typedef struct BST
 
 } BST;
 
-struct BST *
-CreateBST(const size_t datasize, compare *, visit *);
+struct BST * CreateBST(int datasize, compare *, visit *);
 
 void DestroyBST(struct BST *);
 
