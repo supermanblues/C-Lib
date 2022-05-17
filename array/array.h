@@ -23,7 +23,7 @@ typedef int match(const void *key, const void *record);
 #define __COPY_DATA_(dst, src, size) memcpy(dst, src, size);
 #endif
 
-#define Create_Array(datasize) CreateArray(1, datasize)
+#define Create_Array(datasize) arr_create(1, datasize)
 
 typedef struct ARRAY
 {
@@ -64,9 +64,12 @@ typedef struct ARRAY
   
   /** 
    * 删除数组中第 index (0-based) 个位置的元素
-   * @return -1: 空数组; -2: index不合法; 0: 删除成功;
+   * @return -1: index不合法; 0: 删除成功;
    **/
   int (*delete) (struct ARRAY *, int index);
+
+  /** 二维数组删除一行 */ 
+  int (*delete_row) (struct ARRAY *, int index);
 
   /** vector-liked */
   int (*push_front) (struct ARRAY *, const void *);
@@ -87,10 +90,18 @@ typedef struct ARRAY
   /** 逆置数组 */
   void (*reverse) (struct ARRAY *);
 
-} ARRAY, ARR;
+} ARRAY;
 
-struct ARRAY * CreateArray(size_t capacity, int datasize);
+struct ARRAY * arr_create(size_t init_capacity, int datasize);
+void arr_destroy(struct ARRAY *);
 
+struct ARRAY * arr_create2D(size_t init_capacity, int datasize);
+void arr_destroy2D(struct ARRAY *);
+
+// Deprecated: arr_create instead
+struct ARRAY * CreateArray(size_t init_capacity, int datasize);
+
+// Deprecated: arr_destroy instead
 void DestroyArray(struct ARRAY *);
 
 #endif

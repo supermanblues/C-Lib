@@ -128,11 +128,114 @@ void test_findAndSort(void)
   DestroyArray(arr);
 }
 
+void test_array_2d(void)
+{
+  const int M = 4, N = 4;
+
+  int i, j, m, n;
+  char c;
+  struct ARRAY *arr_2d = NULL, *row = NULL;
+
+  const double data[ ][ 4 ] = {{1.1, 2.2, 3.3, 4.4}, {5.5, 6.6, 7.7, 8.8}, {9.9, 10.10, 11.11, 12.12}, {13.13, 14.14, 15.15, 16.16}};
+
+  // array of array (array中的每一个元素都是一个 flexible array)
+  // 相当于 java的 List<List<Integer>> list = new ArrayList<>();
+  arr_2d = arr_create2D(M, sizeof(double));
+  if (arr_2d == NULL)
+  {
+    fprintf(stderr, "The arr_2d create failed. GoodBye!");
+    exit(EXIT_FAILURE);
+  }
+
+  printf("%zu %zu\n", arr_2d->length, arr_2d->capacity);
+
+  for (i = 0; i < M; ++i)
+  {
+    row = *(struct ARRAY **) arr_2d->get(arr_2d, i);
+    for (j = 0; j < N; ++j)
+      row->push_back(row, *(data + i) + j);
+  }
+
+  for (i = 0, m = arr_2d->size(arr_2d); i < m; ++i)
+  {
+    row = *(struct ARRAY **) arr_2d->get(arr_2d, i);
+    for (j = 0, n = row->size(row); j < n; ++j)
+      printf("%-6.2lf%c", *(double *) row->get(row, j), j == n - 1 ? 10 : 0);
+  }
+  fputc(10, stdout);
+
+  row = Create_Array(sizeof(char));
+  if (row == NULL)
+    exit(EXIT_FAILURE);
+
+  for (i = 0; i < 26; ++i)
+  {
+    c = i + 65;
+    row->push_back(row, &c);
+  }
+  arr_2d->push_front(arr_2d, &row);
+
+  row = Create_Array(sizeof(char));
+  if (row == NULL)
+    exit(EXIT_FAILURE);
+
+  for (i = 0; i < 26; ++i)
+  {
+    c = i + 97;
+    row->push_back(row, &c);
+  }
+  arr_2d->push_back(arr_2d, &row);
+
+  row = Create_Array(sizeof(double));
+  if (row == NULL)
+    exit(EXIT_FAILURE);
+  double x = 1.234;
+  row->push_back(row, &x);
+
+  x = 3.1415926;
+  row->push_back(row, &x);
+
+  arr_2d->insert(arr_2d, 4, &row);
+
+  puts("delete before:");
+  for (i = 0, m = arr_2d->size(arr_2d); i < m; ++i)
+  {
+    row = *(struct ARRAY **) arr_2d->get(arr_2d, i);
+    for (j = 0, n = row->size(row); j < n; ++j) 
+    {
+      if (i == 0 || i == m - 1)
+        printf("%-2c%c", *(char *) row->get(row, j), j == n - 1 ? 10 : 0);
+      else
+        printf("%-6.2lf%c", *(double *) row->get(row, j), j == n - 1 ? 10 : 0);
+    }
+  }
+
+  puts("\ndelete after:");
+  arr_2d->delete_row(arr_2d, 3);
+  
+  for (i = 0, m = arr_2d->size(arr_2d); i < m; ++i)
+  {
+    row = *(struct ARRAY **) arr_2d->get(arr_2d, i);
+    for (j = 0, n = row->size(row); j < n; ++j) 
+    {
+      if (i == 0 || i == m - 1)
+        printf("%-2c%c", *(char *) row->get(row, j), j == n - 1 ? 10 : 0);
+      else
+        printf("%-6.2lf%c", *(double *) row->get(row, j), j == n - 1 ? 10 : 0);
+    }
+  }
+
+  arr_destroy2D(arr_2d);
+}
+
 signed main(int argc, char const *argv[])
 {
   test_basic();
   test_insert();
   test_findAndSort();
+
+  putc(10, stdout);
+  test_array_2d();
 
   return ~~(0 ^ 0);
 }

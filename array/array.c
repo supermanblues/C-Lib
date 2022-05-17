@@ -23,6 +23,7 @@ void * arr_find(struct ARRAY *, const void *key, match *);
 
 int arr_insert(struct ARRAY *, int, const void *);
 int arr_delete(struct ARRAY *, int);
+int arr_delete_row(struct ARRAY *, int);
 
 int arr_push_front(struct ARRAY *, const void *);
 int arr_push_back(struct ARRAY *, const void *);
@@ -34,24 +35,24 @@ void arr_travel(struct ARRAY *, void (*visit) (const void *));
 void arr_sort(struct ARRAY *, compar *, int);
 void arr_reverse(struct ARRAY *);
 
-struct ARRAY * CreateArray(size_t capacity, int datasize)
+struct ARRAY * CreateArray(size_t init_capacity, int datasize)
 {
   struct ARRAY *ptr = NULL;
 
-  if (capacity <= 0 || datasize <= 0)
+  if (init_capacity <= 0 || datasize <= 0)
     return NULL;
 
   ptr = (struct ARRAY *) malloc(sizeof *ptr);
   if (ptr == NULL)
     return NULL;
 
-  ptr->base = malloc(capacity * datasize);
+  ptr->base = malloc(init_capacity * datasize);
   if (ptr->base == NULL)
     return NULL;
   
   ptr->datasize = datasize;
   ptr->length   = 0;
-  ptr->capacity = capacity;
+  ptr->capacity = init_capacity;
 
   /* ================ Operations ================ */
   ptr->empty = arr_empty;
@@ -63,9 +64,10 @@ struct ARRAY * CreateArray(size_t capacity, int datasize)
   ptr->back  = arr_back;
   ptr->rear  = arr_back;
 
-  ptr->find   = arr_find;
-  ptr->insert = arr_insert;
-  ptr->delete = arr_delete;
+  ptr->find       = arr_find;
+  ptr->insert     = arr_insert;
+  ptr->delete     = arr_delete;
+  ptr->delete_row = arr_delete_row;
 
   ptr->push_front = arr_push_front;
   ptr->push_back  = arr_push_back;
@@ -78,6 +80,33 @@ struct ARRAY * CreateArray(size_t capacity, int datasize)
   ptr->reverse = arr_reverse;
 
   return ptr;
+}
+
+struct ARRAY * arr_create(size_t init_capacity, int datasize)
+{
+  return CreateArray(init_capacity, datasize);
+}
+
+struct ARRAY * arr_create2D(size_t init_capacity, int datasize)
+{
+  int i;
+  struct ARRAY *row    = NULL;
+  struct ARRAY *arr_2d = NULL;
+
+  arr_2d = arr_create(init_capacity, sizeof(struct ARRAY *));
+  if (arr_2d == NULL)
+    return NULL;
+
+  for (i = 0; i < init_capacity; ++i)
+  {
+    row = Create_Array(datasize);
+    if (row == NULL)
+      return NULL;
+
+    arr_2d->push_back(arr_2d, &row);
+  }
+
+  return arr_2d;
 }
 
 int arr_empty(struct ARRAY *ptr)
@@ -177,19 +206,35 @@ int arr_push_back(struct ARRAY *ptr, const void *data)
 }
 
 int arr_delete(struct ARRAY *ptr, int index)
-{ // TODO：需要重构此函数
+{ 
   int i;
 
-  if (arr_empty(ptr))
-    return -1;
-
   if (index < 0 || index >= ptr->length)
-    return -2;
+    return -1;
 
   // Move Data
   for (i = index + 1; i < ptr->length; ++i)
-    __COPY_DATA_(ptr->base + (index - 1) * ptr->datasize,
-        ptr->base + index * ptr->datasize, ptr->datasize);
+    __COPY_DATA_(ptr->base + (i - 1) * ptr->datasize, ptr->base + i * ptr->datasize, ptr->datasize);
+
+  --ptr->length;
+  return 0;
+}
+
+// 册除并释放内存
+int arr_delete_row(struct ARRAY *ptr, int index)
+{ 
+  int i;
+  struct ARRAY *row;
+
+  if (index < 0 || index >= ptr->length)
+    return -1;
+
+  row = *(struct ARRAY **) ptr->get(ptr, index);
+  arr_destroy(row);
+
+  // Move Data
+  for (i = index + 1; i < ptr->length; ++i)
+    __COPY_DATA_(ptr->base + (i - 1) * ptr->datasize, ptr->base + i * ptr->datasize, ptr->datasize);
 
   --ptr->length;
   return 0;
@@ -267,4 +312,23 @@ void DestroyArray(struct ARRAY *ptr)
 {
   free(ptr->base);
   free(ptr);
+}
+
+void arr_destroy(struct ARRAY *ptr)
+{
+  DestroyArray(ptr);
+}
+
+void arr_destroy2D(struct ARRAY *ptr)
+{
+  int i;
+  struct ARRAY *row = NULL;
+
+  for (i = 0; i < ptr->length; ++i)
+  {
+    row = *(struct ARRAY **) ptr->get(ptr, i);
+    arr_destroy(row);
+  }
+
+  arr_destroy(ptr);
 }
