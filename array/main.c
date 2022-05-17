@@ -49,18 +49,23 @@ void test_basic(void)
   assert( arr->rear(arr) == NULL );
 
   for (i = 0; i < DATA_SIZE; ++i)
-    arr->push_back(arr, DATA + i);
+    arr->push_front(arr, DATA + i);
 
   assert( !arr->empty(arr) );
   assert( arr->size(arr) == DATA_SIZE );
-  assert( *(int *) arr->front(arr) == *DATA );
-  assert( *(int *) arr->back(arr) == *(DATA + DATA_SIZE - 1) );
-  assert( *(int *) arr->rear(arr) == *(DATA + DATA_SIZE - 1) );
+  assert( *(int *) arr->back(arr) == *DATA );
+  assert( *(int *) arr->rear(arr) == *DATA );
+  assert( *(int *) arr->front(arr) == *(DATA + DATA_SIZE - 1) );
 
+  arr->reverse(arr);
   for (i = 0; i < DATA_SIZE; ++i)
     assert( __IS_SAME_(arr->get(arr, i), DATA + i, sizeof *DATA) );
 
-  DestroyArray(arr);
+  for (i = 0; i < DATA_SIZE; ++i)
+    arr->pop_back(arr);
+
+  assert( arr->empty(arr) );
+  arr_destroy(arr);
 }
 
 void test_insert(void)
@@ -90,7 +95,7 @@ void test_insert(void)
 
   assert( __IS_SAME_(arr->front(arr), DATA, DATA_SIZE * sizeof *DATA) );
 
-  DestroyArray(arr);
+  arr_destroy(arr);
 }
 
 void test_findAndSort(void)
@@ -125,7 +130,7 @@ void test_findAndSort(void)
   arr->sort(arr, cmp_stud, QUICK_SORT);
   assert( is_sorted(arr->base, arr->size(arr), arr->datasize, cmp_stud) );
 
-  DestroyArray(arr);
+  arr_destroy(arr);
 }
 
 void test_array_2d(void)
@@ -233,8 +238,6 @@ signed main(int argc, char const *argv[])
   test_basic();
   test_insert();
   test_findAndSort();
-
-  putc(10, stdout);
   test_array_2d();
 
   return ~~(0 ^ 0);
