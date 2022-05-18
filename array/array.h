@@ -9,15 +9,7 @@
 #ifndef __ARRAY_H_
 #define __ARRAY_H_
 
-#ifndef __COMPAR_
-#define __COMPAR_
-typedef int compar(const void *a, const void *b);
-#endif
-
-#ifndef __MATCH_
-#define __MATCH_
-typedef int match(const void *key, const void *record);
-#endif
+typedef int compar(const void *, const void *);
 
 #ifndef __COPY_DATA_
 #define __COPY_DATA_(dst, src, size) memcpy(dst, src, size);
@@ -53,8 +45,11 @@ typedef struct ARRAY
   /** 同上 */
   void * (*rear) (struct ARRAY *);
 
-  /* 查找数组元素 */
-  void * (*find) (struct ARRAY *, const void *key, match *);
+  /** 查找数组元素 */
+  void * (*search) (struct ARRAY *, const void *key, compar *);
+
+  /** 二分查找数组元素 */
+  void * (*bsearch) (struct ARRAY *, const void *key, compar *);
 
   /** 
    * 在数组中第 index (0-based) 个位置前插入元素
@@ -85,7 +80,7 @@ typedef struct ARRAY
   void (*travel) (struct ARRAY *, void (*visit) (const void *));
 
   /** 排序数组 */
-  void (*sort) (struct ARRAY *, compar *, int);
+  void (*sort) (struct ARRAY *, compar *);
 
   /** 逆置数组 */
   void (*reverse) (struct ARRAY *);

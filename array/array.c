@@ -9,7 +9,6 @@
 #include <string.h>
 
 #include "array.h"
-#include "../sort/sort.h"
 
 int arr_empty(struct ARRAY *);
 int arr_full(struct ARRAY *);
@@ -19,7 +18,8 @@ void * arr_get(struct ARRAY *, int index);
 void * arr_front(struct ARRAY *);
 void * arr_back(struct ARRAY *);
 
-void * arr_find(struct ARRAY *, const void *key, match *);
+void * arr_search(struct ARRAY *, const void *key, compar *);
+void * arr_bsearch(struct ARRAY *, const void *key, compar *);
 
 int arr_insert(struct ARRAY *, int, const void *);
 int arr_delete(struct ARRAY *, int);
@@ -32,7 +32,7 @@ int arr_pop_back(struct ARRAY *);
 
 void arr_init(struct ARRAY *, const void *);
 void arr_travel(struct ARRAY *, void (*visit) (const void *));
-void arr_sort(struct ARRAY *, compar *, int);
+void arr_sort(struct ARRAY *, compar *);
 void arr_reverse(struct ARRAY *);
 
 struct ARRAY * CreateArray(size_t init_capacity, int datasize)
@@ -64,7 +64,8 @@ struct ARRAY * CreateArray(size_t init_capacity, int datasize)
   ptr->back  = arr_back;
   ptr->rear  = arr_back;
 
-  ptr->find       = arr_find;
+  ptr->search     = arr_search;
+  ptr->bsearch    = arr_bsearch;
   ptr->insert     = arr_insert;
   ptr->delete     = arr_delete;
   ptr->delete_row = arr_delete_row;
@@ -142,7 +143,7 @@ void * arr_back(struct ARRAY *ptr)
   return arr_get(ptr, ptr->length - 1);
 }
 
-void * arr_find(struct ARRAY *ptr, const void *key, match *match)
+void * arr_search(struct ARRAY *ptr, const void *key, compar *compar)
 { // 循序查找法
   int i;
   void *p;
@@ -151,11 +152,16 @@ void * arr_find(struct ARRAY *ptr, const void *key, match *match)
        i < ptr->length;
        ++i, p += ptr->datasize)
   {
-    if (match(key, p) == 0)
+    if (compar(key, p) == 0)
       return p;
   }
 
   return NULL;
+}
+
+void * arr_bsearch(struct ARRAY *ptr, const void *key, compar *compar)
+{ // TODO: 需要自已实现lower_bound, upper_bound
+  return bsearch(key, ptr->base, ptr->length, ptr->datasize, compar);
 }
 
 static inline void large_(struct ARRAY *ptr)
@@ -271,17 +277,9 @@ void arr_travel(struct ARRAY *ptr, void (*visit) (const void *))
   return;
 }
 
-void arr_sort(struct ARRAY *ptr, compar *cmp, int mode)
+void arr_sort(struct ARRAY *ptr, compar *compar)
 {
-  struct MySort *ps = NULL;
-
-  ps = CreateMySort();
-  if (ps == NULL)
-    return;
-
-  ps->sort(ptr->base, ptr->length, ptr->datasize, cmp, mode);
-
-  DestroyMySort(ps);
+  qsort(ptr->base, ptr->length, ptr->datasize, compar);
 }
 
 void arr_reverse(struct ARRAY *ptr)

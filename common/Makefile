@@ -1,5 +1,5 @@
 CC=clang
-OBJS=main.o common.o test-utils.o ../array/array.o ../sort/sort.o
+OBJS=main.o common.o test-utils.o
 CFLAGS+=-std=c11 -c -Wall -O2
 
 main:$(OBJS)
@@ -9,4 +9,13 @@ main:$(OBJS)
 	$(CC) $(CFLAGS) $^ -o $@
 
 clean:
-	$(RM) -r $(OBJS) main
+	$(RM) -r $(OBJS) *.a main
+
+package:
+	$(MAKE) clean
+	$(MAKE)
+
+	ar -r libcommon.a common.o
+
+	cp common.h /usr/local/include/
+	cp libcommon.a /usr/local/lib/

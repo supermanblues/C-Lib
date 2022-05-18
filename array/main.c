@@ -14,6 +14,14 @@
 #include "../sort/sort.h"
 #include "../common/test-utils.h"
 
+static int cmp_by_stud_math_desc(const void * a, const void *b)
+{
+  struct Student *s1 = (struct Student *) a;
+  struct Student *s2 = (struct Student *) b;
+
+  return (s2->math - s1->math);
+}
+
 static int stud_id_match(const void *key, const void *record)
 {
   const int *k = (int *) key;
@@ -116,19 +124,18 @@ void test_findAndSort(void)
   for (i = 0; i < STUD_SIZE; ++i)
     arr->push_back(arr, STUDS + i);
 
-  arr->travel(arr, print_s);
-
-  stud_id = 1, s = arr->find(arr, &stud_id, stud_id_match);
+  stud_id = 1, s = arr->search(arr, &stud_id, stud_id_match);
   assert( __IS_SAME_(s, STUDS, sizeof *s) );
 
-  stud_id = 10, assert( arr->find(arr, &stud_id, stud_id_match) == NULL);
+  stud_id = 10, assert( arr->search(arr, &stud_id, stud_id_match) == NULL);
 
-  stud_math = 67, s = arr->find(arr, &stud_math, stud_math_match);
+  stud_math = 67, s = arr->search(arr, &stud_math, stud_math_match);
   assert( __IS_SAME_(s, STUDS + 4, sizeof *s) );
   
-  /* 按数学成绩从高到低排序, 数学成绩相同则按学号从小到大排序 */
-  arr->sort(arr, cmp_stud, QUICK_SORT);
-  assert( is_sorted(arr->base, arr->size(arr), arr->datasize, cmp_stud) );
+  arr->sort(arr, cmp_by_stud_math_desc);
+  assert( is_sorted(arr->base, arr->size(arr), arr->datasize, cmp_by_stud_math_desc) );
+
+  // stud_math = 53, s = arr->bsearch(arr, &stud_math, stud_math_match);
 
   arr_destroy(arr);
 }

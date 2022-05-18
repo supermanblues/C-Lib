@@ -43,8 +43,6 @@ static const struct Student STUDS[ STUD_SIZE ] = {
   {5, "stud5", 67, 92}
 };
 
-void init_test_data(void);
-
 int cmp_int(const void *, const void *);
 
 int cmp_stud(const void *, const void *);
