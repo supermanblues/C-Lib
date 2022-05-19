@@ -8,7 +8,7 @@ main:$(OBJS)
 	$(CC) $^ -o $@
 
 bst.o:bst.c
-	$(CC) $(CFLAGS) $^ -o $@ -D__bst_preorder_iter_impl -D__bst_inorder_iter_impl -D__bst_postorder_iter_impl
+	$(CC) $(CFLAGS) $^ -o $@ # -D__bst_preorder_iter_impl -D__bst_inorder_iter_impl -D__bst_postorder_iter_impl
 
 %.o:%.c
 	$(CC) $(CFLAGS) $^ -o $@
@@ -21,11 +21,14 @@ package:
 	$(MAKE)
 	
 	ar -r libbst.a bst.o
-	ar -r libarray.a ../array/array.o
-	ar -r libsort.a ../sort/sort.o
-	ar -r liblinkstack.a ../stack/linkstack.o
-	ar -r liblinkqueue.a ../queue/linkqueue.o
-	ar -r libslist.a ../llist/slist.o
+	cp bst.h /usr/local/include/
+	cp libbst.a /usr/local/lib/
 
-	cp bst.h ../array/array.h ../sort/sort.h ../stack/linkstack.h ../queue/linkqueue.h ../llist/slist.h /usr/local/include/
-	cp libbst.a libarray.a libsort.a liblinkstack.a liblinkqueue.a libslist.a /usr/local/lib/
+# 	ar -r libarray.a ../array/array.o
+# 	ar -r libsort.a ../sort/sort.o
+# 	ar -r liblinkstack.a ../stack/linkstack.o
+# 	ar -r liblinkqueue.a ../queue/linkqueue.o
+# 	ar -r libslist.a ../llist/slist.o
+
+# 	cp bst.h ../array/array.h ../sort/sort.h ../stack/linkstack.h ../queue/linkqueue.h ../llist/slist.h /usr/local/include/
+# 	cp libbst.a libarray.a libsort.a liblinkstack.a liblinkqueue.a libslist.a /usr/local/lib/

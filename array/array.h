@@ -15,7 +15,11 @@ typedef int compar(const void *, const void *);
 #define __COPY_DATA_(dst, src, size) memcpy(dst, src, size);
 #endif
 
-#define Create_Array(datasize) arr_create(1, datasize)
+#define Create_Array(datasize) CreateArray(1, datasize)
+#define arr_create(init_capacity, datasize) \
+    CreateArray(init_capacity, datasize)
+
+#define arr_destroy(ptr) DestroyArray(ptr)
 
 typedef struct ARRAY
 {
@@ -87,16 +91,13 @@ typedef struct ARRAY
 
 } ARRAY;
 
-struct ARRAY * arr_create(size_t init_capacity, int datasize);
-void arr_destroy(struct ARRAY *);
-
 struct ARRAY * arr_create2D(size_t init_capacity, int datasize);
 void arr_destroy2D(struct ARRAY *);
 
-// Deprecated: arr_create instead
+// Deprecated: use arr_create instead
 struct ARRAY * CreateArray(size_t init_capacity, int datasize);
 
-// Deprecated: arr_destroy instead
+// Deprecated: use arr_destroy instead
 void DestroyArray(struct ARRAY *);
 
 #endif

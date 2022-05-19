@@ -83,11 +83,6 @@ struct ARRAY * CreateArray(size_t init_capacity, int datasize)
   return ptr;
 }
 
-struct ARRAY * arr_create(size_t init_capacity, int datasize)
-{
-  return CreateArray(init_capacity, datasize);
-}
-
 struct ARRAY * arr_create2D(size_t init_capacity, int datasize)
 {
   int i;
@@ -310,11 +305,6 @@ void DestroyArray(struct ARRAY *ptr)
 {
   free(ptr->base);
   free(ptr);
-}
-
-void arr_destroy(struct ARRAY *ptr)
-{
-  DestroyArray(ptr);
 }
 
 void arr_destroy2D(struct ARRAY *ptr)

@@ -1,8 +1,8 @@
 /**
  * @author: waingxiaoqiang
  * @create-date: 2020-04-21
- * @modify-date: 2020-05-07
- * @version: 0.0.8
+ * @modify-date: 2020-05-19
+ * @version: 0.1.0
  * @description: Binary Search Tree Header File
  */
 /* ========================== BST Start ========================= */
@@ -14,9 +14,12 @@ typedef enum { BST_TRAVEL_LEVELORDER,
                BST_TRAVEL_INORDER,
                BST_TRAVEL_POSTORDER } BST_TRAVEL_MODE;
 
-typedef int compare(const void *, const void *);
+typedef int compar(const void *, const void *);
 
 typedef void visit(const void *);
+
+#define bst_create(datasize, compar, visit) CreateBST(datasize, compar, visit)
+#define bst_destroy(ptr) DestroyBST(ptr)
 
 typedef struct TreeNode
 {
@@ -30,8 +33,8 @@ typedef struct BST
   struct TreeNode *root;
   int datasize;
 
-  visit *vis;   /* 访问BST中节点数据的回调函数 */
-  compare *cmp;
+  visit *visit;   /* 访问BST中节点数据的回调函数 */
+  compar *compar;
 
   int (*size) (struct BST *);
   int (*empty) (struct BST *);
@@ -40,7 +43,7 @@ typedef struct BST
   void (*draw) (struct BST *);
 
   /** 查找元素 */
-  const void * (*search) (struct BST *, const void *key);
+  void * (*search) (struct BST *, const void *key);
   
   /** 新增元素 */
   int (*insert) (struct BST *, const void *key, const void *data);
@@ -64,12 +67,14 @@ typedef struct BST
   void (*balance) (struct BST *);
 
   /** 遍历一颗树 */
-  void (*travel) (struct BST *, BST_TRAVEL_MODE mode);
+  void (*travel) (struct BST *, int mode);
 
 } BST;
 
-struct BST * CreateBST(int datasize, compare *, visit *);
+// Deprecated: use bst_create instead
+struct BST * CreateBST(int datasize, compar *, visit *);
 
+// Deprecated: use bst_destroy instead
 void DestroyBST(struct BST *);
 
 #endif

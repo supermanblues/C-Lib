@@ -47,7 +47,7 @@ signed main(int argc, char const *argv[])
 
   printf("\033[2J\033[?25l"); // clear screen and not display cursor
 
-  bst1 = CreateBST(sizeof(int), cmp_by_val, print_int_val);
+  bst1 = bst_create(sizeof(int), cmp_by_val, print_int_val);
   if (bst1 == NULL)
   {
     fprintf(stderr, "The bst1 create failed. GoodBye!\n");
@@ -97,10 +97,10 @@ signed main(int argc, char const *argv[])
   fputs("\n\n\033[36;7m后序遍历：\033[0m\n", stdout);
   bst1->travel(bst1, BST_TRAVEL_POSTORDER);
 
-  bst2 = CreateBST(sizeof(struct Student), cmp_by_stu_chinese, print_s);
+  bst2 = bst_create(sizeof(struct Student), cmp_by_stu_chinese, print_s);
   if (bst2 == NULL)
   {
-    DestroyBST(bst1);
+    bst_destroy(bst1);
     exit(EXIT_FAILURE);
   }
 
@@ -147,7 +147,7 @@ signed main(int argc, char const *argv[])
   fputs("\nInOrder: \n", stdout);
   bst2->travel(bst2, BST_TRAVEL_INORDER);        // 按语文成绩升序排列 
 
-  DestroyBST(bst1), DestroyBST(bst2);
+  bst_destroy(bst1), bst_destroy(bst2);
 
   printf("\033[?25h"); // 显示光标
   return ~~(0 ^ 0);
