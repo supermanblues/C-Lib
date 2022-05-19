@@ -8,7 +8,7 @@ main:$(OBJS)
 	$(CC) $^ -o $@
 
 bst.o:bst.c
-	$(CC) $(CFLAGS) $^ -o $@ # -D__bst_preorder_iter_impl -D__bst_inorder_iter_impl -D__bst_postorder_iter_impl
+	$(CC) $(CFLAGS) $^ -o $@ # -DBST_TRAVEL_ITER_IMPL
 
 %.o:%.c
 	$(CC) $(CFLAGS) $^ -o $@

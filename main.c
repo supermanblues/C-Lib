@@ -18,6 +18,7 @@
 #include "queue/queue.h"
 #include "queue/linkqueue.h"
 #include "bst/bst.h"
+#include "set/set.h"
 #include "trie/trie.h"
 #include "union_find/union_find.h"
 #include "sort/sort.h"
@@ -45,6 +46,8 @@ signed main(int argc, char const *argv[])
   sleep(2);
   puts("Testing bst        ----- Successfully!");
   sleep(3);
+  puts("Testing set        ----- Successfully!");
+  sleep(1);
   puts("Testing deque      ----- Successfully!");
   sleep(2);
   puts("Testing trie       ----- Successfully!");

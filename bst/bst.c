@@ -11,20 +11,20 @@
 #include <unistd.h>
 
 #include "bst.h"
-#ifdef __BST_TRAVEL_ITER
+#include "../queue/linkqueue.h"  // level order travesal
 
+#ifdef BST_TRAVEL_ITER_IMPL
 #include "../array/array.h"
 #include "../stack/linkstack.h"
-#include "../queue/linkqueue.h"
 #endif
 
-int bst_size(struct BST *);
 int bst_empty(struct BST *);
+size_t bst_size(struct BST *);
+size_t bst_count(struct BST *);
 
 void bst_draw(struct BST *);
 
 void * bst_search(struct BST *, const void *);
-
 int bst_insert(struct BST *, const void *, const void *);
 int bst_delete(struct BST *, const void *);
 
@@ -35,6 +35,9 @@ int bst_height(struct BST *);
 void bst_balance(struct BST *);
 void bst_travel(struct BST *, int mode);
 
+static size_t
+bst_count_(struct TreeNode *);
+
 static void *
 bst_search_(struct TreeNode *, const void *, compar *);
 
@@ -43,9 +46,6 @@ bst_insert_(struct TreeNode **, const void *, const void *,  const size_t, compa
 
 static struct TreeNode *
 bst_delete_(struct TreeNode *, const void *, compar *);
-
-static int
-bst_size_(struct TreeNode *);
 
 static struct TreeNode *
 bst_maximum_(struct TreeNode *);
@@ -80,9 +80,11 @@ struct BST * CreateBST(int datasize, compar *compar, visit *visit)
   bst->compar   = compar;
   bst->visit    = visit;
   bst->datasize = datasize;
+  bst->length   = 0;
 
   /* =============== Operations =============== */
   bst->size    = bst_size;
+  bst->count   = bst_count;
   bst->empty   = bst_empty;
   bst->draw    = bst_draw;
   bst->search  = bst_search;
@@ -97,17 +99,22 @@ struct BST * CreateBST(int datasize, compar *compar, visit *visit)
   return bst;
 }
 
-int bst_size(struct BST *bst)
+size_t bst_size(struct BST *bst)
 {
-  return bst_size_(bst->root);
+  return bst->length;
 }
 
-static int bst_size_(struct TreeNode *root)
+size_t bst_count(struct BST *bst)
+{
+  return bst_count_(bst->root);
+}
+
+static size_t bst_count_(struct TreeNode *root)
 {
   if (root == NULL)
     return 0;
 
-  return bst_size_(root->left) + 1 + bst_size_(root->right);
+  return bst_count_(root->left) + 1 + bst_count_(root->right);
 }
 
 /* 比函数将来必改 */
@@ -171,6 +178,7 @@ int bst_delete(struct BST *bst, const void *key)
     return -1;
 
   bst->root = bst_delete_(bst->root, key, bst->compar);
+  --bst->length;
   return 0;
 }
 
@@ -212,7 +220,13 @@ static struct TreeNode * bst_delete_(struct TreeNode *root, const void *key, com
 
 int bst_insert(struct BST *bst, const void *key, const void *data)
 {
-  return bst_insert_(&bst->root, key, data, bst->datasize, bst->compar);
+  int ret;
+
+  ret = bst_insert_(&bst->root, key, data, bst->datasize, bst->compar);
+  if (ret == 0)
+    ++bst->length;
+
+  return ret;
 }
 
 static int bst_insert_(struct TreeNode **root,
@@ -308,7 +322,7 @@ static void bst_balance_(struct TreeNode **root)
 
   while (1)
   {
-    sub = bst_size_((*root)->left) - bst_size_((*root)->right);
+    sub = bst_count_((*root)->left) - bst_count_((*root)->right);
     if (sub >= -1 && sub <= 1)
       break;
 
@@ -344,18 +358,34 @@ static void bst_turn_right(struct TreeNode **root)
   bst_maximum_(*root)->right = cur;
 }
 
-#ifndef __bst_preorder_iter_impl
-static void preOrder(struct TreeNode *root, visit *vis)
+static void levelOrder(struct TreeNode *root, visit *visit)
 {
-  if (root == NULL)
+  struct LinkQueue *qu = NULL;
+  struct TreeNode *cur = NULL; 
+
+  qu = CreateLinkQueue(sizeof(struct TreeNode *));
+  if (qu == NULL)
     return;
 
-  vis(root->data);
-  preOrder(root->left,  vis);
-  preOrder(root->right, vis);
+  qu->push(qu, &root);
+
+  while (!qu->empty(qu))
+  {
+    qu->pop(qu, &cur);
+    visit(cur->data);
+
+    if (cur->left != NULL)
+      qu->push(qu, &cur->left);
+    
+    if (cur->right != NULL)
+      qu->push(qu, &cur->right);
+  }
+
+  DestroyLinkQueue(qu);
 }
-#else
-static void preOrder(struct TreeNode *root, visit *vis)
+
+#ifdef BST_TRAVEL_ITER_IMPL
+static void preOrder(struct TreeNode *root, visit *visit)
 {
   struct LinkStack *st = NULL;
   struct TreeNode *cur = NULL;
@@ -371,7 +401,7 @@ static void preOrder(struct TreeNode *root, visit *vis)
 
   while (st->pop(st, &cur) == 0)
   {
-    vis(cur->data);
+    visit(cur->data);
     if (cur->right != NULL)
       st->push(st, &cur->right);
 
@@ -381,20 +411,8 @@ static void preOrder(struct TreeNode *root, visit *vis)
 
   DestroyLinkStack(st);
 }
-#endif
 
-#ifndef __bst_inorder_iter_impl
-static void inOrder(struct TreeNode *root, visit* vis)
-{
-  if (root == NULL)
-    return;
-
-  inOrder(root->left,  vis);
-  vis(root->data);
-  inOrder(root->right, vis);
-}
-#else
-static void inOrder(struct TreeNode *root, visit* vis)
+static void inOrder(struct TreeNode *root, visit* visit)
 {
   struct LinkStack *st = NULL;
   struct TreeNode *cur = NULL;
@@ -417,26 +435,14 @@ static void inOrder(struct TreeNode *root, visit* vis)
     }
 
     st->pop(st, &cur);
-    vis(cur->data);
+    visit(cur->data);
     cur = cur->right;
   }
 
   DestroyLinkStack(st);
 }
-#endif
 
-#ifndef __bst_postorder_iter_impl
-static void postOrder(struct TreeNode *root, visit *vis)
-{
-  if (root == NULL)
-    return;
-
-  postOrder(root->left,  vis);
-  postOrder(root->right, vis);
-  vis(root->data);
-}
-#else
-static void postOrder(struct TreeNode *root, visit *vis)
+static void postOrder(struct TreeNode *root, visit *visit)
 {
   int i;
   struct ARRAY *arr = NULL;
@@ -471,38 +477,42 @@ static void postOrder(struct TreeNode *root, visit *vis)
 
   arr->reverse(arr);
   for (i = 0; i < arr->size(arr); ++i)
-    vis((*(struct TreeNode **) arr->get(arr, i))->data);
+    visit((*(struct TreeNode **) arr->get(arr, i))->data);
 
-  DestroyArray(arr);
+  arr_destroy(arr);
   DestroyLinkStack(st);
 }
+#else
+static void preOrder(struct TreeNode *root, visit *visit)
+{
+  if (root == NULL)
+    return;
+
+  visit(root->data);
+  preOrder(root->left,  visit);
+  preOrder(root->right, visit);
+}
+
+static void inOrder(struct TreeNode *root, visit* visit)
+{
+  if (root == NULL)
+    return;
+
+  inOrder(root->left,  visit);
+  visit(root->data);
+  inOrder(root->right, visit);
+}
+
+static void postOrder(struct TreeNode *root, visit *visit)
+{
+  if (root == NULL)
+    return;
+
+  postOrder(root->left,  visit);
+  postOrder(root->right, visit);
+  visit(root->data);
+}
 #endif
-
-// static void levelOrder(struct TreeNode *root, visit *vis)
-// {
-//   struct LinkQueue *qu = NULL;
-//   struct TreeNode *cur = NULL; 
-
-//   qu = CreateLinkQueue(sizeof(struct TreeNode *));
-//   if (qu == NULL)
-//     return;
-
-//   qu->push(qu, &root);
-
-//   while (!qu->empty(qu))
-//   {
-//     qu->pop(qu, &cur);
-//     vis(cur->data);
-
-//     if (cur->left != NULL)
-//       qu->push(qu, &cur->left);
-    
-//     if (cur->right != NULL)
-//       qu->push(qu, &cur->right);
-//   }
-
-//   DestroyLinkQueue(qu);
-// }
 
 void bst_travel(struct BST *bst, int mode)
 {
@@ -511,9 +521,9 @@ void bst_travel(struct BST *bst, int mode)
 
   switch (mode)
   {
-    // case BST_TRAVEL_LEVELORDER:
-    //   levelOrder(bst->root ,bst->visit);
-    //   break;
+    case BST_TRAVEL_LEVELORDER:
+      levelOrder(bst->root ,bst->visit);
+      break;
     case BST_TRAVEL_PREORDER:
       preOrder(bst->root, bst->visit);
       break;

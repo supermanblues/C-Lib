@@ -67,6 +67,7 @@ signed main(int argc, char const *argv[])
 
   assert( !bst1->empty(bst1) );
   assert( bst1->size(bst1) == 10);
+  assert( bst1->size(bst1) == bst1->count(bst1));
   assert( bst1->height(bst1) == 10 );
   assert( *(int *) bst1->minimum(bst1) == min(DATA, 10) );
   assert( *(int *) bst1->maximum(bst1) == max(DATA, 10) );
@@ -115,6 +116,7 @@ signed main(int argc, char const *argv[])
 
   assert( !bst2->empty(bst2) );
   assert( bst2->size(bst2) == STUD_SIZE );
+  assert( bst2->size(bst2) == bst2->count(bst2) );
   assert( bst2->height(bst2) == 4 );
 
   fputs("\n\nMinimum and Maximum\n", stdout);

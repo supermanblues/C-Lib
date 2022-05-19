@@ -13,6 +13,7 @@
     - Linked Queue (Singly-Linked List Based)
 * Deque (Doubly-Linked Circular List Based)
 * Binary Search Tree
+* Set (BST Based)
 * Trie Tree
 * Union Find (Make use of Dynamic Array)
 * Sorting
@@ -22,6 +23,6 @@
     - Binary Insertion Sort
     - Quick Sort
     - TODO: Merge Sort
-* TODO:
+* TODO
     - Heap
     - HashTable

@@ -32,12 +32,19 @@ typedef struct BST
 {
   struct TreeNode *root;
   int datasize;
+  size_t length;
 
   visit *visit;   /* 访问BST中节点数据的回调函数 */
   compar *compar;
 
-  int (*size) (struct BST *);
+  /** 判断BST是否为空  */
   int (*empty) (struct BST *);
+
+  /** 返回BST中元素的个数 */
+  size_t (*size) (struct BST *);
+
+   /** 求一颗BST子数的节点个数 */
+  size_t (*count) (struct BST *);
 
   /** 在屏幕上输出一颗BST树 */
   void (*draw) (struct BST *);
@@ -45,7 +52,9 @@ typedef struct BST
   /** 查找元素 */
   void * (*search) (struct BST *, const void *key);
   
-  /** 新增元素 */
+  /** 新增元素 
+   *@return -1: 节点内存分配失败; -2: 插入重复数据  0: 成功;
+   */
   int (*insert) (struct BST *, const void *key, const void *data);
   
   /** 删除元素 */
