@@ -11,7 +11,6 @@
 #include <assert.h>
 
 #include "array.h"
-#include "../sort/sort.h"
 #include "../common/test-utils.h"
 
 static int cmp_by_stud_math_desc(const void * a, const void *b)
@@ -20,6 +19,14 @@ static int cmp_by_stud_math_desc(const void * a, const void *b)
   struct Student *s2 = (struct Student *) b;
 
   return (s2->math - s1->math);
+}
+
+static int cmp_stud_by_chinese(const void *a, const void *b)
+{
+  const struct Student *s1 = (struct Student *) a;
+  const struct Student *s2 = (struct Student *) b;
+
+  return s1->chinese - s2->chinese;
 }
 
 static int stud_id_match(const void *key, const void *record)
@@ -54,7 +61,8 @@ void test_basic(void)
   assert( arr->size(arr) == 0 );
   assert( arr->front(arr) == NULL );
   assert( arr->back(arr) == NULL );
-  assert( arr->rear(arr) == NULL );
+  assert( arr->max(arr, cmp_int) == NULL );
+  assert( arr->min(arr, cmp_int) == NULL );
 
   for (i = 0; i < DATA_SIZE; ++i)
     arr->push_front(arr, DATA + i);
@@ -62,8 +70,9 @@ void test_basic(void)
   assert( !arr->empty(arr) );
   assert( arr->size(arr) == DATA_SIZE );
   assert( *(int *) arr->back(arr) == *DATA );
-  assert( *(int *) arr->rear(arr) == *DATA );
   assert( *(int *) arr->front(arr) == *(DATA + DATA_SIZE - 1) );
+  assert( *(int *) arr->min(arr, cmp_int) == *DATA );
+  assert( *(int *) arr->max(arr, cmp_int) == *(DATA + DATA_SIZE - 1));
 
   arr->reverse(arr);
   for (i = 0; i < DATA_SIZE; ++i)
@@ -109,35 +118,40 @@ void test_insert(void)
 void test_findAndSort(void)
 {
   int i;
-  struct ARRAY *arr = NULL;
+  struct ARRAY *studs = NULL;
 
   int stud_id, stud_math;
-  struct Student *s;
+  struct Student *s = NULL;
 
-  arr = Create_Array(sizeof *STUDS);
-  if (arr == NULL)
+  studs = Create_Array(sizeof *STUDS);
+  if (studs == NULL)
   {
-    fprintf(stderr, "The arr create failed. GoodBye!");
+    fprintf(stderr, "The studs create failed. GoodBye!");
     exit(EXIT_FAILURE);
   }
 
   for (i = 0; i < STUD_SIZE; ++i)
-    arr->push_back(arr, STUDS + i);
+    studs->push_back(studs, STUDS + i);
 
-  stud_id = 1, s = arr->search(arr, &stud_id, stud_id_match);
+  studs->travel(studs, print_s);
+  fputc(10, stdout);
+
+  stud_id = 1, s = studs->search(studs, &stud_id, stud_id_match);
   assert( __IS_SAME_(s, STUDS, sizeof *s) );
 
-  stud_id = 10, assert( arr->search(arr, &stud_id, stud_id_match) == NULL);
+  stud_id = 10, assert( studs->search(studs, &stud_id, stud_id_match) == NULL);
 
-  stud_math = 67, s = arr->search(arr, &stud_math, stud_math_match);
+  stud_math = 67, s = studs->search(studs, &stud_math, stud_math_match);
   assert( __IS_SAME_(s, STUDS + 4, sizeof *s) );
   
-  arr->sort(arr, cmp_by_stud_math_desc);
-  assert( is_sorted(arr->base, arr->size(arr), arr->datasize, cmp_by_stud_math_desc) );
+  studs->sort(studs, cmp_by_stud_math_desc);
+  assert( is_sorted(studs->base, studs->size(studs), studs->datasize, cmp_by_stud_math_desc) );
 
-  // stud_math = 53, s = arr->bsearch(arr, &stud_math, stud_math_match);
+  print_s(studs->min(studs, cmp_stud_by_chinese));
+  print_s(studs->max(studs, cmp_stud_by_chinese));
 
-  arr_destroy(arr);
+  // stud_math = 53, s = studs->bsearch(studs, &stud_math, stud_math_match);
+  arr_destroy(studs);
 }
 
 void test_array_2d(void)
@@ -158,8 +172,6 @@ void test_array_2d(void)
     fprintf(stderr, "The arr_2d create failed. GoodBye!");
     exit(EXIT_FAILURE);
   }
-
-  printf("%zu %zu\n", arr_2d->length, arr_2d->capacity);
 
   for (i = 0; i < M; ++i)
   {

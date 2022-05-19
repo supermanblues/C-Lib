@@ -12,7 +12,6 @@
 #include "../array/array.h"
 
 int st_empty(struct SqStack *);
-int st_full(struct SqStack *);
 size_t st_size(struct SqStack *);
 
 int st_push(struct SqStack *, const void *);
@@ -20,9 +19,12 @@ int st_pop(struct SqStack *, void *);
 
 const void * st_top(struct SqStack *);
 
-struct SqStack * CreateSqStack(/*const int capacity,*/ const int datasize)
+struct SqStack * CreateSqStack(int datasize)
 {
   struct SqStack *ptr = NULL;
+
+  if (datasize <= 0)
+    return NULL;
 
   ptr = (struct SqStack *) malloc(sizeof *ptr);
   if (ptr == NULL)
@@ -34,7 +36,6 @@ struct SqStack * CreateSqStack(/*const int capacity,*/ const int datasize)
 
   /* =============== Operations ============== */
   ptr->empty = st_empty;
-  ptr->full  = st_full;
   ptr->size  = st_size;
   ptr->push  = st_push;
   ptr->pop   = st_pop;
@@ -49,13 +50,6 @@ int st_empty(struct SqStack *ptr)
   struct ARRAY *arr = ptr->arr;
 
   return arr->empty(arr);
-}
-
-int st_full(struct SqStack *ptr)
-{
-  struct ARRAY *arr = ptr->arr;
-
-  return arr->full(arr);
 }
 
 size_t st_size(struct SqStack *ptr)
@@ -94,6 +88,6 @@ const void * st_top(struct SqStack *ptr)
 
 void DestroyStack(struct SqStack *ptr) 
 {
-  DestroyArray(ptr->arr);
+  arr_destroy(ptr->arr);
   free(ptr);
 }

@@ -19,7 +19,7 @@ void test_SqStack(void)
   int data[ DATA_SIZE ];
   struct SqStack *st = NULL;
 
-  st = CreateSqStack(sizeof *DATA);
+  st = st_create(sizeof *DATA);
   if (st == NULL)
   {
     fprintf(stderr, "The st create failed. GoodBye!\n");
@@ -43,12 +43,11 @@ void test_SqStack(void)
   reverse(data, DATA_SIZE, sizeof(int));
   assert( is_same(data, DATA, DATA_SIZE * sizeof(int)) );
 
-  DestroyStack(st);
+  st_destroy(st);
 }
 
 void test_LinkStack(void)
 {
-
   int i;
   struct Student studs[STUD_SIZE];
   struct LinkStack *st = NULL;

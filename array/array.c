@@ -12,6 +12,7 @@
 
 int arr_empty(struct ARRAY *);
 int arr_full(struct ARRAY *);
+void arr_clear(struct ARRAY *);
 size_t arr_size(struct ARRAY *);
 
 void * arr_get(struct ARRAY *, int index);
@@ -30,8 +31,10 @@ int arr_push_back(struct ARRAY *, const void *);
 int arr_pop_front(struct ARRAY *);
 int arr_pop_back(struct ARRAY *);
 
-void arr_init(struct ARRAY *, const void *);
-void arr_travel(struct ARRAY *, void (*visit) (const void *));
+void arr_fill(struct ARRAY *, const void *);
+void * arr_max(struct ARRAY *, compar *);
+void * arr_min(struct ARRAY *, compar *);
+void arr_travel(struct ARRAY *, visit *);
 void arr_sort(struct ARRAY *, compar *);
 void arr_reverse(struct ARRAY *);
 
@@ -57,12 +60,12 @@ struct ARRAY * CreateArray(size_t init_capacity, int datasize)
   /* ================ Operations ================ */
   ptr->empty = arr_empty;
   ptr->full  = arr_full;
+  ptr->clear = arr_clear;
   ptr->size  = arr_size;
 
   ptr->get   = arr_get;
   ptr->front = arr_front;
   ptr->back  = arr_back;
-  ptr->rear  = arr_back;
 
   ptr->search     = arr_search;
   ptr->bsearch    = arr_bsearch;
@@ -75,7 +78,9 @@ struct ARRAY * CreateArray(size_t init_capacity, int datasize)
   ptr->pop_front  = arr_pop_front;
   ptr->pop_back   = arr_pop_back;
 
-  ptr->init    = arr_init;
+  ptr->fill    = arr_fill;
+  ptr->max     = arr_max;
+  ptr->min     = arr_min;
   ptr->travel  = arr_travel;
   ptr->sort    = arr_sort;
   ptr->reverse = arr_reverse;
@@ -115,6 +120,11 @@ int arr_full(struct ARRAY *ptr)
   return (ptr->length == ptr->capacity);
 }
 
+void arr_clear(struct ARRAY *ptr)
+{
+  ptr->length = 0;
+}
+
 size_t arr_size(struct ARRAY *ptr)
 {
   return ptr->length;
@@ -141,14 +151,14 @@ void * arr_back(struct ARRAY *ptr)
 void * arr_search(struct ARRAY *ptr, const void *key, compar *compar)
 { // 循序查找法
   int i;
-  void *p;
+  void *cur;
 
-  for (i = 0, p = ptr->base;
+  for (i = 0, cur = ptr->base;
        i < ptr->length;
-       ++i, p += ptr->datasize)
+       ++i, cur += ptr->datasize)
   {
-    if (compar(key, p) == 0)
-      return p;
+    if (compar(key, cur) == 0)
+      return cur;
   }
 
   return NULL;
@@ -209,21 +219,25 @@ int arr_push_back(struct ARRAY *ptr, const void *data)
 int arr_delete(struct ARRAY *ptr, int index)
 { 
   int i;
+  void *cur;
 
   if (index < 0 || index >= ptr->length)
     return -1;
 
   // Move Data
-  for (i = index + 1; i < ptr->length; ++i)
-    __COPY_DATA_(ptr->base + (i - 1) * ptr->datasize, ptr->base + i * ptr->datasize, ptr->datasize);
+  for (i = index + 1, cur= ptr->base + ptr->datasize; 
+       i < ptr->length;
+       ++i, cur+= ptr->datasize)
+  {
+    __COPY_DATA_(cur- ptr->datasize, cur, ptr->datasize);
+  }
 
   --ptr->length;
   return 0;
 }
 
-// 册除并释放内存
 int arr_delete_row(struct ARRAY *ptr, int index)
-{ 
+{ // 册除并释放内存 
   int i;
   struct ARRAY *row;
 
@@ -251,23 +265,73 @@ int arr_pop_back(struct ARRAY *ptr)
   return arr_delete(ptr, ptr->length - 1);
 }
 
-void arr_init(struct ARRAY *ptr, const void *data)
+void arr_fill(struct ARRAY *ptr, const void *data)
 {
   int i;
+  void *cur;
 
-  for (i = 0; i < ptr->length; ++i)
-    __COPY_DATA_(ptr->base + i * ptr->datasize, data, ptr->datasize);
+  ptr->length = ptr->capacity;
+  for (i = 0, cur= ptr->base;
+       i < ptr->length;
+       ++i, cur+= ptr->datasize)
+  {
+    __COPY_DATA_(cur, data, ptr->datasize);
+  }
 
   return;
 }
 
-void arr_travel(struct ARRAY *ptr, void (*visit) (const void *))
+void * arr_max(struct ARRAY *ptr, compar *compar)
 {
-  int i = 0;
-  void *p = ptr->base;
+  int i;
+  void *max, *cur;
 
-  for (; i < ptr->length; ++i, p += ptr->datasize)
-    visit(p);
+  if (arr_empty(ptr))
+    return NULL;
+
+  max = ptr->base;
+  for (i = 1, cur = ptr->base + ptr->datasize;
+       i < ptr->length;
+       ++i, cur += ptr->datasize)
+  {
+    if (compar(cur, max) > 0)
+      max = cur;
+  }
+
+  return max;
+} 
+
+void * arr_min(struct ARRAY *ptr, compar *compar)
+{
+  int i;
+  void *min, *cur;
+
+  if (arr_empty(ptr))
+    return NULL;
+
+  min = ptr->base;
+  for (i = 1, cur = ptr->base + ptr->datasize;
+       i < ptr->length;
+       ++i, cur += ptr->datasize)
+  {
+    if (compar(cur, min) < 0)
+      min = cur;
+  }
+
+  return min;
+} 
+
+void arr_travel(struct ARRAY *ptr, visit *visit)
+{
+  int i;
+  void *cur;
+
+  for (i = 0, cur = ptr->base;
+       i < ptr->length;
+       ++i, cur += ptr->datasize)
+  {
+    visit(cur);
+  }
 
   return;
 }
@@ -280,7 +344,7 @@ void arr_sort(struct ARRAY *ptr, compar *compar)
 void arr_reverse(struct ARRAY *ptr)
 {
   int i;
-  void *base = NULL, *tmp = NULL;
+  void *base, *tmp;
   int datasize, len;
 
   tmp = malloc(ptr->datasize);
@@ -310,7 +374,7 @@ void DestroyArray(struct ARRAY *ptr)
 void arr_destroy2D(struct ARRAY *ptr)
 {
   int i;
-  struct ARRAY *row = NULL;
+  struct ARRAY *row;
 
   for (i = 0; i < ptr->length; ++i)
   {

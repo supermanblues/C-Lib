@@ -9,6 +9,10 @@
 #ifndef __STACK_H__
 #define __STACK_H__
 
+
+#define st_create(datasize) CreateSqStack(datasize)
+#define st_destroy(ptr) DestroyStack(ptr);
+
 typedef struct SqStack
 {
   struct ARRAY *arr;
@@ -16,9 +20,6 @@ typedef struct SqStack
   /** 判断栈是否为空 */
   int (*empty) (struct SqStack *);
   
-  /** 判断栈是否为满 */
-  int (*full) (struct SqStack *);
-
   /** 返回栈中元素的个数 */
   size_t (*size) (struct SqStack *);
 
@@ -36,10 +37,9 @@ typedef struct SqStack
 
 } SqStack;
 
-// 为了体现动态性，我刻意去除了capacity做为函数的第一个形参！
-struct SqStack * CreateSqStack(/*const int capacity, */ const int datasize);
+struct SqStack * CreateSqStack(int datasize);
 
-void DestroyStack(SqStack *);
+void DestroyStack(struct SqStack *);
 
 #endif
 /* ========================= SqStack End ========================= */

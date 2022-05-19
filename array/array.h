@@ -10,6 +10,7 @@
 #define __ARRAY_H_
 
 typedef int compar(const void *, const void *);
+typedef void visit(const void *);
 
 #ifndef __COPY_DATA_
 #define __COPY_DATA_(dst, src, size) memcpy(dst, src, size);
@@ -34,6 +35,9 @@ typedef struct ARRAY
   /** 判断数组是否为满 */
   int (*full) (struct ARRAY *);
 
+  /** 清空数组 */
+  void (*clear) (struct ARRAY *);
+
   /** 返回数组中元素的个数 */
   size_t (*size) (struct ARRAY *);
   
@@ -45,9 +49,6 @@ typedef struct ARRAY
   
   /** 返回数组中最后一个位置元素的内存地址 */
   void * (*back) (struct ARRAY *);
-  
-  /** 同上 */
-  void * (*rear) (struct ARRAY *);
 
   /** 查找数组元素 */
   void * (*search) (struct ARRAY *, const void *key, compar *);
@@ -77,11 +78,14 @@ typedef struct ARRAY
   int (*pop_front) (struct ARRAY *);
   int (*pop_back) (struct ARRAY *);
 
-  /** 初始化数组 */
-  void (*init) (struct ARRAY *, const void *);
+  /** 填充数组 */
+  void (*fill) (struct ARRAY *, const void *);
+
+  void * (*max) (struct ARRAY *, compar *);
+  void * (*min) (struct ARRAY *, compar *);
   
   /** 遍历数组 */
-  void (*travel) (struct ARRAY *, void (*visit) (const void *));
+  void (*travel) (struct ARRAY *, visit *);
 
   /** 排序数组 */
   void (*sort) (struct ARRAY *, compar *);
