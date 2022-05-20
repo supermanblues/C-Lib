@@ -1,12 +1,19 @@
 CC=clang
-OBJS=main.o set.o ../bst/bst.o ../queue/linkqueue.o ../llist/slist.o ../common/test-utils.o
-CFLAGS+=-std=c11 -c -Wall -O2
+TARGET=main
+OBJS=main.o set.o
+LIBS=-lbst -llinkqueue -lslist -ltest-utils
+CFLAGS+=-std=c11 -g -Wall -O2
 
-main:$(OBJS)
-	$(CC) $^ -o $@
-
-%.o:%.c
-	$(CC) $(CFLAGS) $^ -o $@
+$(TARGET):$(OBJS)
+	$(CC) $^ -o $@ $(LIBS)
 
 clean:
-	$(RM) -r $(OBJS) *.a main
+	$(RM) $(OBJS) *.a $(TARGET)
+
+package:
+	$(MAKE) clean
+	$(MAKE)
+	
+	$(AR) -r libset.a set.o
+	cp set.h /usr/local/include/
+	cp libset.a /usr/local/lib/

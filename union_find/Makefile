@@ -1,12 +1,19 @@
 CC=clang
-OBJS=main.o union_find.o ../array/array.o ../sort/sort.o ../common/test-utils.o
-CFLAGS+=-std=c11 -c -Wall -O2
+TARGET=main
+OBJS=main.o union_find.o
+LIBS=-larray -ltest-utils
+CFLAGS+=-std=c11 -g -Wall -O2
 
-main:$(OBJS)
-	$(CC) $^ -o $@
-
-%.o:%.c
-	$(CC) $(CFLAGS) $^ -o $@
+$(TARGET):$(OBJS)
+	$(CC) $^ -o $@ $(LIBS)
 
 clean:
-	$(RM) -r $(OBJS) main
+	$(RM) $(OBJS) $(TARGET)
+
+package:
+	$(MAKE) clean
+	$(MAKE)
+
+	$(AR) -r libunion_find.a union_find.o
+	cp union_find.h /usr/local/include/
+	cp libunion_find.a /usr/local/lib/

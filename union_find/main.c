@@ -10,7 +10,7 @@
 #include <assert.h>
 
 #include "union_find.h"
-#include "../common/test-utils.h"
+#include <test-utils.h>
 
 signed main(int argc, char const *argv[])
 {

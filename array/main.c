@@ -11,7 +11,7 @@
 #include <assert.h>
 
 #include "array.h"
-#include "../common/test-utils.h"
+#include <test-utils.h>
 
 static int cmp_by_stud_math_desc(const void * a, const void *b)
 {

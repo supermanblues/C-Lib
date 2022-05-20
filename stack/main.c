@@ -11,7 +11,7 @@
 
 #include "stack.h"
 #include "linkstack.h"
-#include "../common/test-utils.h"
+#include <test-utils.h>
 
 void test_SqStack(void)
 {

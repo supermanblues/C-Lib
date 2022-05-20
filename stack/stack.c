@@ -9,7 +9,7 @@
 #include <string.h>
 
 #include "stack.h"
-#include "../array/array.h"
+#include <array.h>
 
 int st_empty(struct SqStack *);
 size_t st_size(struct SqStack *);

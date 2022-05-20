@@ -1,21 +1,20 @@
 CC=clang
-OBJS=main.o array.o ../common/test-utils.o
-CFLAGS+=-std=c11 -c -Wall -O2
+TARGET=main
+OBJS=main.o array.o
+LIBS=-ltest-utils
+CFLAGS+=-std=c11 -g -Wall -O2
 
-main:$(OBJS)
-	$(CC) $^ -o $@
-
-%.o:%.c
-	$(CC) $(CFLAGS) $^ -o $@
+$(TARGET):$(OBJS)
+	$(CC) $^ -o $@ $(LIBS)
 
 clean:
-	$(RM) -r $(OBJS) *.a main
+	$(RM) $(OBJS) *.a $(TARGET)
 
 package:
 	$(MAKE) clean
 	$(MAKE)
 
-	ar -r libarray.a array.o
+	$(AR) -r libarray.a array.o
 
 	cp array.h /usr/local/include/
 	cp libarray.a /usr/local/lib/

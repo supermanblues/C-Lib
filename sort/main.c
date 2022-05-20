@@ -10,7 +10,7 @@
 #include <assert.h>
 
 #include "sort.h"
-#include "../common/test-utils.h"
+#include <test-utils.h>
 
 /* 面向切面（AOP）的编程思想 --- 小型的测试框架 */
 void test_sort(struct MySort *ps, SORT_MODE mode)

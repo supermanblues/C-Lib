@@ -10,7 +10,7 @@
 #include <assert.h>
 
 #include "set.h"
-#include "../common/test-utils.h"
+#include <test-utils.h>
 
 signed main(int argc, char const *argv[])
 {
@@ -24,7 +24,7 @@ signed main(int argc, char const *argv[])
     exit(EXIT_FAILURE);
   }
 
-  assert( set->empty(set) );
+  assert( set->empty(set));
   assert( set->size(set) == 0);
 
   for (i = 0; i < DATA_SIZE; ++i)

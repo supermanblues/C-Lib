@@ -9,7 +9,6 @@
 #ifndef __STACK_H__
 #define __STACK_H__
 
-
 #define st_create(datasize) CreateSqStack(datasize)
 #define st_destroy(ptr) DestroyStack(ptr);
 

@@ -12,7 +12,7 @@
 
 #include "slist.h"
 #include "llist.h"
-#include "../common/test-utils.h"
+#include <test-utils.h>
 
 void test_mock_stack_using_slist(void)
 {

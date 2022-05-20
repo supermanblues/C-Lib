@@ -10,7 +10,7 @@
 #include <assert.h>
 
 #include "bst.h"
-#include "../common/test-utils.h"
+#include <test-utils.h>
 
 static int cmp_by_val(const void *key, const void *record)
 {

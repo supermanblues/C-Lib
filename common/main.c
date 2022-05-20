@@ -11,7 +11,7 @@
 #include <assert.h>
 
 #include "common.h"
-#include "test-utils.h"
+#include <test-utils.h>
 
 const char *str = "0wangqiang!@Window123Window456Window789";
 

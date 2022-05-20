@@ -1,12 +1,19 @@
 CC=clang
-OBJS=main.o sort.o ../common/test-utils.o
-CFLAGS+=-std=c11 -c -Wall -O2
+TARGET=main
+OBJS=main.o sort.o
+LIBS=-ltest-utils
+CFLAGS+=-std=c11 -g -Wall -O2
 
-main:$(OBJS)
-	$(CC) $^ -o $@
-
-%.o:%.c
-	$(CC) $(CFLAGS) $^ -o $@
+$(TARGET):$(OBJS)
+	$(CC) $^ -o $@ $(LIBS)
 
 clean:
-	$(RM) -r $(OBJS) main
+	$(RM) $(OBJS) $(TARGET)
+
+package:
+	$(MAKE) clean
+	$(MAKE)
+	
+	$(AR) -r libsort.a sort.o
+	cp sort.h /usr/local/include/
+	cp libsort.a /usr/local/lib/

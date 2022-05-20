@@ -1,17 +1,16 @@
 CC=clang
-OBJS=main.o array/array.o llist/slist.o llist/llist.o \
-		stack/stack.o stack/linkstack.o \
-		queue/queue.o queue/linkqueue.o \
-		bst/bst.o set/set.o union_find/union_find.o sort/sort.o common/test-utils.o
-CFLAGS+=-std=c11 -c -Wall -O2
+TARGET=mytools
+OBJS=main.o
+LIBS=-larray -lslist -lllist \
+		-lstack -llinkstack -lqueue -llinkqueue \
+		-lbst -lset -lunion_find  -ltrie \
+		-lsort -lcommon -ltest-utils
+CFLAGS+=-std=c11 -g -Wall -O2
 
-mytools:$(OBJS)
-	$(CC) $^ -o $@
-
-%.o:%.c
-	$(CC) $(CFLAGS) $^ -o $@
+$(TARGET):$(OBJS)
+	$(CC) $^ -o $@ $(LIBS)
 
 clean:
-	$(RM) -f $(OBJS) mytools
+	$(RM) $(OBJS) $(TARGET)
 # 	find . -name "*.o"  | xargs rm -f *.o
 	

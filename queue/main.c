@@ -11,7 +11,7 @@
 
 #include "queue.h"
 #include "linkqueue.h"
-#include "../common/test-utils.h"
+#include <test-utils.h>
 
 void test_SqQueue(void)
 {

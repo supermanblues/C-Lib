@@ -8,7 +8,7 @@
 #include <stdlib.h>
 
 #include "set.h"
-#include "../bst/bst.h"
+#include <bst.h>
 
 int set_empty(struct SET *);
 size_t set_size(struct SET *);

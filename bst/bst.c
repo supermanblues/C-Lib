@@ -83,9 +83,9 @@ struct BST * CreateBST(int datasize, compar *compar, visit *visit)
   bst->length   = 0;
 
   /* =============== Operations =============== */
+  bst->empty   = bst_empty;
   bst->size    = bst_size;
   bst->count   = bst_count;
-  bst->empty   = bst_empty;
   bst->draw    = bst_draw;
   bst->search  = bst_search;
   bst->insert  = bst_insert;

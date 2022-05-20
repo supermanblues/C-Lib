@@ -1,12 +1,19 @@
 CC=clang
-OBJS=main.o trie.o ../common/test-utils.o
-CFLAGS+=-std=c11 -c -Wall -O2
+TARGET=main
+OBJS=main.o trie.o
+LIBS=-ltest-utils
+CFLAGS+=-std=c11 -g -Wall -O2
 
-main:$(OBJS)
-	$(CC) $^ -o $@
-
-%.o:%.c
-	$(CC) $(CFLAGS) $^ -o $@
+$(TARGET):$(OBJS)
+	$(CC) $^ -o $@ $(LIBS)
 
 clean:
-	$(RM) -r $(OBJS) main
+	$(RM) $(OBJS) $(TARGET)
+
+package:
+	$(MAKE) clean
+	$(MAKE)
+
+	$(AR) -r libtrie.a trie.o
+	cp trie.h /usr/local/include/
+	cp libtrie.a /usr/local/lib/

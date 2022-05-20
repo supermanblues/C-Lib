@@ -1,22 +1,21 @@
 CC=clang
-OBJS=main.o slist.o llist.o ../common/test-utils.o
-CFLAGS+=-std=c11 -c -Wall -O2
+TARGET=main
+OBJS=main.o slist.o llist.o
+LIBS=-ltest-utils
+CFLAGS+=-std=c11 -g -Wall -O2
 
-main:$(OBJS)
-	$(CC) $^ -o $@
-
-%.o:%.c
-	$(CC) $(CFLAGS) $^ -o $@
+$(TARGET):$(OBJS)
+	$(CC) $^ -o $@ $(LIBS)
 
 clean:
-	$(RM) -r $(OBJS) *.a main
+	$(RM) $(OBJS) *.a $(TARGET)
 
 package:
 	$(MAKE) clean
 	$(MAKE)
 	
-	ar -r libslist.a ../llist/slist.o
-	ar -r libllist.a ../llist/llist.o
+	$(AR) -r libslist.a slist.o
+	$(AR) -r libllist.a llist.o
 
 	cp slist.h llist.h /usr/local/include/
 	cp libslist.a libllist.a /usr/local/lib/

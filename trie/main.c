@@ -10,7 +10,7 @@
 #include <assert.h>
 
 #include "trie.h"
-#include "../common/test-utils.h"
+#include <test-utils.h>
 
 signed main(int argc, char const *argv[]) {
 
