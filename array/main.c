@@ -45,9 +45,43 @@ static int stud_math_match(const void *key, const void *record)
   return (*k - r->math);
 }
 
+static void sum(void *prev, const void *cur)
+{
+  int *p = (int *) prev;
+  *p += * (int *) cur;
+}
+
+static void product(void *prev, const void *cur)
+{
+  int *p = (int *) prev;
+  *p *= * (int *) cur;
+}
+
+static void max(void *prev, const void *cur)
+{
+  int *p = (int *) prev;
+  int *c = (int *) cur;
+  *p = *c > *p ? *c : *p;
+}
+
+static void min(void *prev, const void *cur)
+{
+  int *p = (int *) prev;
+  int *c = (int *) cur;
+  *p = *c < *p ? *c : *p;
+}
+
+static void tot_stud_score(void *prev, const void *cur)
+{
+  struct Student *s = (struct Student *) cur;
+
+  *(float *) prev += (s->math + s->chinese) / 2.0;
+}
+
 void test_basic(void)
 {
   int i;
+  int s = 0, prod = 1, maximum = -0x7fffffff, minimum = 0x7fffffff;
   struct ARRAY *arr = NULL;
 
   arr = Create_Array(sizeof *DATA);
@@ -73,6 +107,18 @@ void test_basic(void)
   assert( *(int *) arr->front(arr) == *(DATA + DATA_SIZE - 1) );
   assert( *(int *) arr->min(arr, cmp_int) == *DATA );
   assert( *(int *) arr->max(arr, cmp_int) == *(DATA + DATA_SIZE - 1));
+  
+  arr->accumulate(arr, &s, sum);
+  assert( s == 1 + 2 + 3 + 4 + 5 );
+
+  arr->accumulate(arr, &prod, product);
+  assert( prod == 1 * 2 * 3 * 4 * 5 );
+
+  arr->accumulate(arr, &maximum, max);
+  assert( maximum == *(int *) arr->max(arr, cmp_int) );
+
+  arr->accumulate(arr, &minimum, min);
+  assert( minimum == *(int *) arr->min(arr, cmp_int) );
 
   arr->reverse(arr);
   for (i = 0; i < DATA_SIZE; ++i)
@@ -90,7 +136,7 @@ void test_insert(void)
   int i, x;
   struct ARRAY *arr = NULL;
 
-  arr = Create_Array(sizeof *DATA);
+  arr = Create_Array(sizeof x);
   if (arr == NULL)
   {
     fprintf(stderr, "The arr create failed. GoodBye!");
@@ -104,13 +150,11 @@ void test_insert(void)
   x = 1;
   assert( arr->push_back(arr, &x) == 0 );
 
-  x = 4;
-  for (i = 1; i < 4; ++i, --x)
+  for (i = 1, x = 4; i < 4; ++i, --x)
     arr->insert(arr, i, &x);
 
   arr->reverse(arr);
-
-  assert( __IS_SAME_(arr->front(arr), DATA, DATA_SIZE * sizeof *DATA) );
+  assert( __IS_SAME_(arr->base, DATA, DATA_SIZE * sizeof *DATA) );
 
   arr_destroy(arr);
 }
@@ -118,12 +162,13 @@ void test_insert(void)
 void test_findAndSort(void)
 {
   int i;
-  struct ARRAY *studs = NULL;
-
+  float tot_score = 0; 
   int stud_id, stud_math;
+
+  struct ARRAY *studs = NULL;
   struct Student *s = NULL;
 
-  studs = Create_Array(sizeof *STUDS);
+  studs = Create_Array(sizeof *s);
   if (studs == NULL)
   {
     fprintf(stderr, "The studs create failed. GoodBye!");
@@ -150,7 +195,10 @@ void test_findAndSort(void)
   print_s(studs->min(studs, cmp_stud_by_chinese));
   print_s(studs->max(studs, cmp_stud_by_chinese));
 
-  // stud_math = 53, s = studs->bsearch(studs, &stud_math, stud_math_match);
+  studs->accumulate(studs, &tot_score, tot_stud_score);
+  printf("总平均成绩为: %lf\n每名学生的平均成绩为: %.2lf\n", tot_score, tot_score / studs->size(studs));
+
+  fputc(10, stdout);
   arr_destroy(studs);
 }
 

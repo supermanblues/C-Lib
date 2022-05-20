@@ -53,9 +53,6 @@ typedef struct ARRAY
   /** 查找数组元素 */
   void * (*search) (struct ARRAY *, const void *key, compar *);
 
-  /** 二分查找数组元素 */
-  void * (*bsearch) (struct ARRAY *, const void *key, compar *);
-
   /** 
    * 在数组中第 index (0-based) 个位置前插入元素
    * @return -1: index不合法; 0: 插入成功; (理论上不存在空间占满的情况)
@@ -93,8 +90,8 @@ typedef struct ARRAY
   /** 逆置数组 */
   void (*reverse) (struct ARRAY *);
 
-  /** 数组操作的万能函数 such as max, min, sum, product and so on... */
-  void accumulate(struct ARRAY *, void (*callback) (void *prev, void *cur));
+  /** 万能函数 such as max, min, sum, product and so on... */
+  void (*accumulate) (struct ARRAY *, void *, void (*callback) (void *, const void *));
 
 } ARRAY;
 

@@ -20,7 +20,6 @@ void * arr_front(struct ARRAY *);
 void * arr_back(struct ARRAY *);
 
 void * arr_search(struct ARRAY *, const void *key, compar *);
-void * arr_bsearch(struct ARRAY *, const void *key, compar *);
 
 int arr_insert(struct ARRAY *, int, const void *);
 int arr_delete(struct ARRAY *, int);
@@ -37,6 +36,7 @@ void * arr_min(struct ARRAY *, compar *);
 void arr_travel(struct ARRAY *, visit *);
 void arr_sort(struct ARRAY *, compar *);
 void arr_reverse(struct ARRAY *);
+void arr_accumulate(struct ARRAY *, void *, void (*callback) (void *, const void *));
 
 struct ARRAY * CreateArray(size_t init_capacity, int datasize)
 {
@@ -68,7 +68,6 @@ struct ARRAY * CreateArray(size_t init_capacity, int datasize)
   ptr->back  = arr_back;
 
   ptr->search     = arr_search;
-  ptr->bsearch    = arr_bsearch;
   ptr->insert     = arr_insert;
   ptr->delete     = arr_delete;
   ptr->delete_row = arr_delete_row;
@@ -78,12 +77,13 @@ struct ARRAY * CreateArray(size_t init_capacity, int datasize)
   ptr->pop_front  = arr_pop_front;
   ptr->pop_back   = arr_pop_back;
 
-  ptr->fill    = arr_fill;
-  ptr->max     = arr_max;
-  ptr->min     = arr_min;
-  ptr->travel  = arr_travel;
-  ptr->sort    = arr_sort;
-  ptr->reverse = arr_reverse;
+  ptr->fill       = arr_fill;
+  ptr->max        = arr_max;
+  ptr->min        = arr_min;
+  ptr->travel     = arr_travel;
+  ptr->sort       = arr_sort;
+  ptr->reverse    = arr_reverse;
+  ptr->accumulate = arr_accumulate;
 
   return ptr;
 }
@@ -162,11 +162,6 @@ void * arr_search(struct ARRAY *ptr, const void *key, compar *compar)
   }
 
   return NULL;
-}
-
-void * arr_bsearch(struct ARRAY *ptr, const void *key, compar *compar)
-{ // TODO: 需要自已实现lower_bound, upper_bound
-  return bsearch(key, ptr->base, ptr->length, ptr->datasize, compar);
 }
 
 static inline void large_(struct ARRAY *ptr)
@@ -363,6 +358,24 @@ void arr_reverse(struct ARRAY *ptr)
   }
 
   free(tmp);
+}
+
+void arr_accumulate(struct ARRAY *ptr, void *init, void (*callback) (void *, const void *))
+{
+  int i;
+  void *cur;
+
+  if (arr_empty(ptr))
+    return;
+
+  for (i = 0, cur = ptr->base;
+       i < ptr->length;
+       ++i, cur += ptr->datasize)
+  {
+    callback(init, cur);
+  }
+
+  return;
 }
 
 void DestroyArray(struct ARRAY *ptr)

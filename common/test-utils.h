@@ -17,11 +17,6 @@
 #define __COPY_DATA_(dst, src, size) memcpy(dst, src, size)
 #endif
 
-#ifndef __COMPAR_
-#define __COMPAR_
-typedef int compar(const void *a, const void *b);
-#endif
-
 #define DATA_SIZE  5
 #define STUD_SIZE  5
 
@@ -51,15 +46,9 @@ void print_int(const void *);
 
 void print_s(const void *);
 
-int max(const int arr[], const size_t size);
+void reverse(void *, const size_t, const size_t);
 
-int min(const int arr[], const size_t size);
-
-int is_same(const void *p, const void *q, const size_t size);
-
-void reverse(void *arr, const size_t num, const size_t size);
-
-int is_sorted(const void *data, const size_t num, const size_t size, compar* cmp);
+int is_sorted(const void *, const size_t, const size_t, int (*compar)(const void *, const void *));
 
 #endif
 /* ========================== Test Hepler Functions End ========================= */

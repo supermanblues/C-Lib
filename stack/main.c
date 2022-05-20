@@ -7,6 +7,7 @@
  **/
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <assert.h>
 
 #include "stack.h"
@@ -41,7 +42,7 @@ void test_SqStack(void)
   while (st->pop(st, data + i++) == 0);
 
   reverse(data, DATA_SIZE, sizeof(int));
-  assert( is_same(data, DATA, DATA_SIZE * sizeof(int)) );
+  assert( __IS_SAME_(data, DATA, DATA_SIZE * sizeof(int)) );
 
   st_destroy(st);
 }
@@ -70,14 +71,14 @@ void test_LinkStack(void)
   assert( !st->empty(st) );
   assert( st->size(st) == STUD_SIZE );
 
-  assert( is_same(st->top(st), STUDS + STUD_SIZE - 1, sizeof(struct Student)) );
-  assert( is_same(st->peek(st), STUDS + STUD_SIZE - 1, sizeof(struct Student)) );
+  assert( __IS_SAME_(st->top(st), STUDS + STUD_SIZE - 1, sizeof(struct Student)) );
+  assert( __IS_SAME_(st->peek(st), STUDS + STUD_SIZE - 1, sizeof(struct Student)) );
 
   i = 0;
   while (st->pop(st, studs + i++) == 0);
 
   reverse(studs, STUD_SIZE, sizeof(struct Student));
-  assert(is_same(studs, STUDS, STUD_SIZE * sizeof(struct Student)));
+  assert( __IS_SAME_(studs, STUDS, STUD_SIZE * sizeof(struct Student)) );
 
   DestroyLinkStack(st);
 }

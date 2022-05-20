@@ -46,29 +46,6 @@ void print_s(const void *r)
   printf("id: %d\tname: %s\tmath: %d\tchinese: %d\n", s->id, s->name, s->math, s->chinese);
 }
 
-int max(const int arr[], const size_t n)
-{
-  int i, max = -2147483648;
-  for (i = 0; i < n; ++i)
-    max = (arr[i] > max ? arr[i] : max);
-
-  return max;
-}
-
-int min(const int arr[], const size_t n)
-{
-  int i, min = 2147483647;
-  for (i = 0; i < n; ++i)
-    min = (arr[i] < min ? arr[i] : min);
-
-  return min;
-}
-
-int is_same(const void *p, const void *q, const size_t size)
-{
-  return (memcmp(p, q, size) == 0);
-}
-
 void reverse(void *arr, const size_t num, const size_t size)
 {
   int i;
@@ -88,12 +65,15 @@ void reverse(void *arr, const size_t num, const size_t size)
   free(tmp);
 }
 
-int is_sorted(const void *data, const size_t num, const size_t size, compar* cmp)
+int is_sorted(const void *data,
+              const size_t num,
+              const size_t size,
+              int (*compar) (const void *, const void *))
 {
   const void *p;
 
   for (p = data; p < data + (num - 1) * size; p += size)
-    if (cmp(p, p + size) > 0)
+    if (compar(p, p + size) > 0)
       return 0;
 
   return 1;

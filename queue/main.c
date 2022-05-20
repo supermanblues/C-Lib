@@ -7,6 +7,7 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <assert.h>
 
 #include "queue.h"
@@ -42,7 +43,7 @@ void test_SqQueue(void)
 
   assert( q->empty(q) );
   assert( q->size(q) == 0 );
-  assert( is_same(data, DATA, DATA_SIZE * sizeof(*DATA)) );
+  assert( __IS_SAME_(data, DATA, DATA_SIZE * sizeof(*DATA)) );
 
   DestroyQueue(q);
 }
@@ -72,15 +73,15 @@ void test_LinkQueue(void)
 
   assert( !q->empty(q) );
   assert( q->size(q) == STUD_SIZE );
-  assert( is_same(q->front(q), STUDS, sizeof *studs) );
-  assert( is_same(q->peek(q), STUDS,  sizeof *studs) );
-  assert( is_same(q->back(q), STUDS + STUD_SIZE - 1, sizeof *studs) );
-  assert( is_same(q->rear(q), STUDS + STUD_SIZE - 1, sizeof *studs) );
+  assert( __IS_SAME_(q->front(q), STUDS, sizeof *studs) );
+  assert( __IS_SAME_(q->peek(q), STUDS,  sizeof *studs) );
+  assert( __IS_SAME_(q->back(q), STUDS + STUD_SIZE - 1, sizeof *studs) );
+  assert( __IS_SAME_(q->rear(q), STUDS + STUD_SIZE - 1, sizeof *studs) );
 
   i = 0;
   while (q->pop(q, studs + i++) == 0);
 
-  assert( is_same(studs, STUDS, STUD_SIZE * sizeof *studs) );
+  assert( __IS_SAME_(studs, STUDS, STUD_SIZE * sizeof *studs) );
 
   DestroyLinkQueue(q);
 }

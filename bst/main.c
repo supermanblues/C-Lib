@@ -53,8 +53,8 @@ void test(void)
   assert( bst1->size(bst1) == 10);
   assert( bst1->size(bst1) == bst1->count(bst1));
   assert( bst1->height(bst1) == 10 );
-  assert( *(int *) bst1->min(bst1) == min(data, 10) );
-  assert( *(int *) bst1->max(bst1) == max(data, 10) );
+  assert( *(int *) bst1->min(bst1) == 0 );
+  assert( *(int *) bst1->max(bst1) == 57 );
 
   for (i = sizeof(data) / sizeof(*data) - 1; i >= 0; --i)
     assert( *(int *) bst1->search(bst1, data + i) == *(data + i) );
