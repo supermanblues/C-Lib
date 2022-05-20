@@ -93,6 +93,9 @@ typedef struct ARRAY
   /** 逆置数组 */
   void (*reverse) (struct ARRAY *);
 
+  /** 数组操作的万能函数 such as max, min, sum, product and so on... */
+  void accumulate(struct ARRAY *, void (*callback) (void *prev, void *cur));
+
 } ARRAY;
 
 struct ARRAY * arr_create2D(size_t init_capacity, int datasize);
