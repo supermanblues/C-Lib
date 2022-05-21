@@ -12,12 +12,21 @@ bst.o:bst.c
 	$(CC) $(CFLAGS)   -c -o $@ $^
 
 clean:
-	$(RM) $(OBJS) *.a $(TARGET)
+	$(RM) *.o *.a *.so $(TARGET)
+
+test:
+	@$(MAKE) clean
+	@$(MAKE)
+	@./$(TARGET)
 
 package:
-	$(MAKE) clean
-	$(MAKE)
-	
+	@$(MAKE) test
+
 	$(AR) -r libbst.a bst.o
+	$(CC) -shared -fpic -o libbst.so bst.o ../queue/linkqueue.c ../llist/slist.c
+
+install:
+	@$(MAKE) package
+
 	cp bst.h /usr/local/include/
-	cp libbst.a /usr/local/lib/
+	cp libbst.a libbst.so /usr/local/lib/

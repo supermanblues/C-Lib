@@ -8,12 +8,21 @@ $(TARGET):$(OBJS)
 	$(CC) $^ -o $@ $(LIBS)
 
 clean:
-	$(RM) $(OBJS) $(TARGET)
+	$(RM) *.o *.a *.so $(TARGET)
+
+test:
+	@$(MAKE) clean
+	@$(MAKE)
+	@./$(TARGET)
 
 package:
-	$(MAKE) clean
-	$(MAKE)
-	
+	@$(MAKE) test
+
 	$(AR) -r libsort.a sort.o
+	$(CC) -shared -fpic -o libsort.so sort.o
+
+install:
+	@$(MAKE) package
+
 	cp sort.h /usr/local/include/
-	cp libsort.a /usr/local/lib/
+	cp libsort.a libsort.so /usr/local/lib/

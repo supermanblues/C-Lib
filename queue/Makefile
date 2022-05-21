@@ -8,15 +8,23 @@ $(TARGET):$(OBJS)
 	$(CC) $^ -o $@ $(LIBS)
 
 clean:
-	$(RM) $(OBJS) *.a $(TARGET)
+	$(RM) *.o *.a *.so $(TARGET)
+
+test:
+	@$(MAKE) clean
+	@$(MAKE)
+	@./$(TARGET)
 
 package:
-	$(MAKE) clean
-	$(MAKE)
+	@$(MAKE) test
 
 	$(AR) -r libqueue.a queue.o
 	$(AR) -r liblinkqueue.a linkqueue.o
+	$(CC) -shared -fpic -o libqueue.so queue.o
+	$(CC) -shared -fpic -o liblinkqueue.so linkqueue.o ../llist/slist.c
+
+install:
+	@$(MAKE) package
 
 	cp queue.h linkqueue.h /usr/local/include/
-	cp libqueue.a liblinkqueue.a /usr/local/lib/
-
+	cp libqueue.a liblinkqueue.a libqueue.so liblinkqueue.so /usr/local/lib/

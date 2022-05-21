@@ -11,6 +11,21 @@ $(TARGET):$(OBJS)
 	$(CC) $^ -o $@ $(LIBS)
 
 clean:
-	$(RM) $(OBJS) $(TARGET)
+	$(RM) *.o $(TARGET)
 # 	find . -name "*.o"  | xargs rm -f *.o
-	
+
+integration-test:
+	$(MAKE) -C common test
+	$(MAKE) -C sort test
+	$(MAKE) -C array test
+	$(MAKE) -C llist test
+	$(MAKE) -C stack test
+	$(MAKE) -C queue test
+	$(MAKE) -C bst test
+	$(MAKE) -C set test
+	$(MAKE) -C trie test
+	$(MAKE) -C union_find test
+
+	$(MAKE) clean
+	$(MAKE)
+	./$(TARGET)

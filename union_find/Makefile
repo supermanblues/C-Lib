@@ -8,12 +8,21 @@ $(TARGET):$(OBJS)
 	$(CC) $^ -o $@ $(LIBS)
 
 clean:
-	$(RM) $(OBJS) $(TARGET)
+	$(RM) *.o *.a *.so $(TARGET)
+
+test:
+	@$(MAKE) clean
+	@$(MAKE)
+	@./$(TARGET)
 
 package:
-	$(MAKE) clean
-	$(MAKE)
+	@$(MAKE) test
 
 	$(AR) -r libunion_find.a union_find.o
+	$(CC) -shared -fpic -o libunion_find.so union_find.o ../array/array.c
+	
+install:
+	$(MAKE) package
+
 	cp union_find.h /usr/local/include/
-	cp libunion_find.a /usr/local/lib/
+	cp libunion_find.a libunion_find.so /usr/local/lib/

@@ -8,14 +8,23 @@ $(TARGET):$(OBJS)
 	$(CC) $^ -o $@ $(LIBS)
 
 clean:
-	$(RM) $(OBJS) *.a $(TARGET)
+	$(RM) *.o *.a *.so $(TARGET)
+
+test:
+	@$(MAKE) clean
+	@$(MAKE)
+	@./$(TARGET)
 
 package:
-	$(MAKE) clean
-	$(MAKE)
+	@$(MAKE) test
 	
 	$(AR) -r libslist.a slist.o
 	$(AR) -r libllist.a llist.o
+	$(CC) -shared -fpic -o libslist.so slist.o
+	$(CC) -shared -fpic -o libllist.so llist.o
+
+install:
+	$(MAKE) package
 
 	cp slist.h llist.h /usr/local/include/
-	cp libslist.a libllist.a /usr/local/lib/
+	cp libslist.a libllist.a libslist.so libllist.so /usr/local/lib/

@@ -8,13 +8,21 @@ $(TARGET):$(OBJS)
 	$(CC) $^ -o $@ $(LIBS)
 
 clean:
-	$(RM) $(OBJS) *.a $(TARGET)
+	$(RM) *.o *.a *.so $(TARGET)
+
+test:
+	@$(MAKE) clean
+	@$(MAKE)
+	@./$(TARGET)
 
 package:
-	$(MAKE) clean
-	$(MAKE)
+	@$(MAKE) test
 
 	$(AR) -r libarray.a array.o
+	$(CC) -shared -fpic -o libarray.so array.o
+
+install:
+	$(MAKE) package
 
 	cp array.h /usr/local/include/
-	cp libarray.a /usr/local/lib/
+	cp libarray.a libarray.so /usr/local/lib/

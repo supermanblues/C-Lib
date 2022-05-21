@@ -8,12 +8,21 @@ $(TARGET):$(OBJS)
 	$(CC) $^ -o $@ $(LIBS)
 
 clean:
-	$(RM) $(OBJS) *.a $(TARGET)
+	$(RM) *.o *.a *.so $(TARGET)
+
+test:
+	@$(MAKE) clean
+	@$(MAKE)
+	@./$(TARGET)
 
 package:
-	$(MAKE) clean
-	$(MAKE)
+	@$(MAKE) test
 	
 	$(AR) -r libset.a set.o
+	$(CC) -shared -fpic -o libset.so set.o ../bst/bst.c ../queue/linkqueue.c ../llist/slist.c
+
+install:
+	$(MAKE) package
+
 	cp set.h /usr/local/include/
-	cp libset.a /usr/local/lib/
+	cp libset.a libset.so /usr/local/lib/

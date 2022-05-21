@@ -8,12 +8,21 @@ $(TARGET):$(OBJS)
 	$(CC) $^ -o $@ $(LIBS)
 
 clean:
-	$(RM) $(OBJS) $(TARGET)
+	$(RM) *.o *.a *.so $(TARGET)
+
+test:
+	@$(MAKE) clean
+	@$(MAKE)
+	@./$(TARGET)
 
 package:
-	$(MAKE) clean
-	$(MAKE)
+	@$(MAKE) test
 
 	$(AR) -r libtrie.a trie.o
+	$(CC) -shared -fpic -o libtrie.so trie.o
+
+install:
+	$(MAKE) package
+
 	cp trie.h /usr/local/include/
-	cp libtrie.a /usr/local/lib/
+	cp libtrie.a libtrie.so /usr/local/lib/
