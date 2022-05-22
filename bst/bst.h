@@ -16,7 +16,7 @@ typedef enum { BST_TRAVEL_LEVELORDER,
 
 typedef int compar(const void *, const void *);
 
-typedef void visit(const void *);
+typedef void (^visit)(const void *);
 
 #define bst_create(datasize, compar, visit) CreateBST(datasize, compar, visit)
 #define bst_destroy(ptr) DestroyBST(ptr)
@@ -35,7 +35,7 @@ typedef struct BST
   size_t length;
 
   /** 访问BST中节点数据的回调函数 */
-  visit *visit;
+  visit visit;
 
   compar *compar;
 
@@ -80,7 +80,7 @@ typedef struct BST
 } BST;
 
 // Deprecated: use bst_create instead
-struct BST * CreateBST(int datasize, compar *, visit *);
+struct BST * CreateBST(int datasize, compar *, visit);
 
 // Deprecated: use bst_destroy instead
 void DestroyBST(struct BST *);

@@ -18,13 +18,15 @@ const void * llist_front(struct LLIST *);
 
 const void * llist_rear(struct LLIST *);
 
-int push_front(struct LLIST *, const void *);
+int llist_push_front(struct LLIST *, const void *);
 
-int push_back(struct LLIST *, const void *);
+int llist_push_back(struct LLIST *, const void *);
 
-int pop_front(struct LLIST *, void *);
+int llist_pop_front(struct LLIST *, void *);
 
-int pop_back(struct LLIST *, void *);
+int llist_pop_back(struct LLIST *, void *);
+
+void llist_travel(struct LLIST *, visit);
 
 struct LLIST * llist_create(const int datasize)
 {
@@ -45,10 +47,11 @@ struct LLIST * llist_create(const int datasize)
   ptr->front = llist_front;
   ptr->rear  = llist_rear;
 
-  ptr->push_front = push_front;
-  ptr->push_back  = push_back;
-  ptr->pop_front  = pop_front;
-  ptr->pop_back   = pop_back;
+  ptr->push_front = llist_push_front;
+  ptr->push_back  = llist_push_back;
+  ptr->pop_front  = llist_pop_front;
+  ptr->pop_back   = llist_pop_back;
+  ptr->travel     = llist_travel;
 
   return ptr;
 }
@@ -162,34 +165,46 @@ static int llist_delete(struct LLIST *ptr, void *data, LLIST_OPER_MODE mode)
   return ret;
 }
 
-int push_front(struct LLIST *ptr, const void *data)
+int llist_push_front(struct LLIST *ptr, const void *data)
 {
   return llist_insert(ptr, data, LLIST_FORWARD);
 }
 
-int push_back(struct LLIST *ptr, const void *data)
+int llist_push_back(struct LLIST *ptr, const void *data)
 {
   return llist_insert(ptr, data, LLIST_BACKWARD);
 }
 
-int pop_front(struct LLIST *ptr, void *data)
+int llist_pop_front(struct LLIST *ptr, void *data)
 {
   return llist_delete(ptr, data, LLIST_FORWARD);
 }
 
-int pop_back(struct LLIST *ptr, void *data)
+int llist_pop_back(struct LLIST *ptr, void *data)
 {
   return llist_delete(ptr, data, LLIST_BACKWARD);
+}
+
+void llist_travel(struct LLIST *ptr, visit visit)
+{
+  struct DuLNode *cur;
+
+  for (cur = ptr->head.next; cur != &ptr->head; cur = cur->next)
+    visit(cur->data);
+
+  return;
 }
 
 void llist_destroy(struct LLIST *ptr)
 {
   struct DuLNode *cur, *nxt;
+
   for (cur = ptr->head.next; cur != &ptr->head; cur = nxt)
   {
     nxt = cur->next;
     free(cur);
   }
+
   free(ptr);
 }
 

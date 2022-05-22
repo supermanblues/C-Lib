@@ -59,7 +59,7 @@ static void bst_turn_left(struct TreeNode **);
 
 static void bst_turn_right(struct TreeNode **);
 
-struct BST * CreateBST(int datasize, compar *compar, visit *visit)
+struct BST * CreateBST(int datasize, compar *compar, visit visit)
 {
   struct BST *bst = NULL;
 
@@ -352,7 +352,7 @@ static void bst_turn_right(struct TreeNode **root)
   bst_max_(*root)->right = cur;
 }
 
-static void levelOrder(struct TreeNode *root, visit *visit)
+static void levelOrder(struct TreeNode *root, visit visit)
 {
   struct LinkQueue *qu = NULL;
   struct TreeNode *cur = NULL; 
@@ -379,7 +379,7 @@ static void levelOrder(struct TreeNode *root, visit *visit)
 }
 
 #ifdef BST_TRAVEL_ITER_IMPL
-static void preOrder(struct TreeNode *root, visit *visit)
+static void preOrder(struct TreeNode *root, visit visit)
 {
   struct LinkStack *st = NULL;
   struct TreeNode *cur = NULL;
@@ -406,7 +406,7 @@ static void preOrder(struct TreeNode *root, visit *visit)
   DestroyLinkStack(st);
 }
 
-static void inOrder(struct TreeNode *root, visit* visit)
+static void inOrder(struct TreeNode *root, visit visit)
 {
   struct LinkStack *st = NULL;
   struct TreeNode *cur = NULL;
@@ -436,7 +436,7 @@ static void inOrder(struct TreeNode *root, visit* visit)
   DestroyLinkStack(st);
 }
 
-static void postOrder(struct TreeNode *root, visit *visit)
+static void postOrder(struct TreeNode *root, visit visit)
 {
   int i;
   struct ARRAY *arr = NULL;
@@ -477,7 +477,7 @@ static void postOrder(struct TreeNode *root, visit *visit)
   DestroyLinkStack(st);
 }
 #else
-static void preOrder(struct TreeNode *root, visit *visit)
+static void preOrder(struct TreeNode *root, visit visit)
 {
   if (root == NULL)
     return;
@@ -487,7 +487,7 @@ static void preOrder(struct TreeNode *root, visit *visit)
   preOrder(root->right, visit);
 }
 
-static void inOrder(struct TreeNode *root, visit* visit)
+static void inOrder(struct TreeNode *root, visit visit)
 {
   if (root == NULL)
     return;
@@ -497,7 +497,7 @@ static void inOrder(struct TreeNode *root, visit* visit)
   inOrder(root->right, visit);
 }
 
-static void postOrder(struct TreeNode *root, visit *visit)
+static void postOrder(struct TreeNode *root, visit visit)
 {
   if (root == NULL)
     return;

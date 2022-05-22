@@ -34,6 +34,11 @@ void test_mock_stack_using_slist(void)
   for (i = 0; i < DATA_SIZE; ++i)
     st->push_front(st, DATA + i);
 
+  st->travel(st, ^(const void *data) {
+    printf("%d ", *(int *) data);
+  });
+  fputc(10, stdout);
+
   assert( !st->empty(st) );
   assert( st->size(st) == DATA_SIZE );
 
@@ -180,16 +185,26 @@ void test_mock_deque()
   for (i = 0; i < STUD_SIZE; ++i)
     dq->push_back(dq, STUDS + i);
 
+  dq->travel(dq, ^(const void *r) {
+    const struct Student *s = (struct Student *) r;
+    printf("id: %d\tname: %s\tmath: %d\tchinese: %d\n", s->id, s->name, s->math, s->chinese);
+  });
+
   while (dq->pop_front(dq, &s) == 0)
-    print_s(&s);
+    continue;
 
   /* stack-liked */
   fputs("\nreversed output!\n", stdout);
   for (i = 0; i < STUD_SIZE; ++i)
     dq->push_front(dq, STUDS + i);
 
+  dq->travel(dq, ^(const void *r) {
+    const struct Student *s = (struct Student *) r;
+    printf("id: %d\tname: %s\tmath: %d\tchinese: %d\n", s->id, s->name, s->math, s->chinese);
+  });
+
   while (dq->pop_front(dq, &s) == 0)
-    print_s(&s);
+    continue;
 
   DestroyDeque(dq);
 }

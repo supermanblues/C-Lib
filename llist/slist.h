@@ -16,8 +16,8 @@
 #define __COPY_DATA_(dst, src, size) memcpy(dst, src, size)
 #endif
 
-typedef int compar(const void *a, const void *b);
-typedef void visit(const void *data);
+typedef int compar(const void *, const void *);
+typedef void (^visit)(const void *);
 
 typedef struct SListNode
 {
@@ -43,7 +43,7 @@ typedef struct SLIST
   int (*push_back) (struct SLIST *, const void *);
   int (*pop_front) (struct SLIST *, void *);
 
-  void (*travel) (struct SLIST *, visit *);
+  void (*travel) (struct SLIST *, visit);
   void (*reverse) (struct SLIST *);
   void (*sort) (struct SLIST *, compar *);
 

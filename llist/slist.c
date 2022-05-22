@@ -20,7 +20,7 @@ int slist_push_front(struct SLIST *, const void *);
 int slist_push_back(struct SLIST *, const void *);
 int slist_pop_front(struct SLIST *, void *);
 
-void slist_travel(struct SLIST *, visit *);
+void slist_travel(struct SLIST *, visit);
 void slist_reverse(struct SLIST *);
 void slist_sort(struct SLIST *, compar *);
 
@@ -155,7 +155,7 @@ int slist_pop_front(struct SLIST *ptr, void *data)
   return 0;
 }
 
-void slist_travel(struct SLIST *ptr, visit *visit)
+void slist_travel(struct SLIST *ptr, visit visit)
 {
   struct SListNode *cur = NULL;
 

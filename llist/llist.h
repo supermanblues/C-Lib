@@ -14,6 +14,8 @@
 
 typedef enum { LLIST_FORWARD, LLIST_BACKWARD } LLIST_OPER_MODE;
 
+typedef void (^visit)(const void *);
+
 typedef struct DuLNode
 {
   struct DuLNode *prev;  /* 指向直接前驱结点的指针 */
@@ -34,6 +36,8 @@ typedef struct LLIST
 
   int (*pop_front) (struct LLIST *, void *);
   int (*pop_back) (struct LLIST *, void *);
+
+  void (*travel) (struct LLIST *, visit visit);
 
   int datasize;
   size_t length;
