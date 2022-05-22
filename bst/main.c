@@ -12,6 +12,11 @@
 #include "bst.h"
 #include <test-utils.h>
 
+static void print_int(const void *data)
+{
+  printf("%d ", *(int *) data);
+}
+
 static int cmp_by_stu_chinese(const void *key, const void *record)
 {
   const int *k = (int *) key;

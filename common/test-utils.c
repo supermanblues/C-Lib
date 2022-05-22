@@ -29,14 +29,6 @@ int cmp_stud(const void *a, const void *b)
   return (s1->id - s2->id);
 }
 
-void print_int(const void *r)
-{
-  if (r == NULL)
-    return;
-
-  printf("%d ", *(int *) r);
-}
-
 void print_s(const void *r)
 {
   if (r == NULL)

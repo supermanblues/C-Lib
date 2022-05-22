@@ -42,8 +42,6 @@ int cmp_int(const void *, const void *);
 
 int cmp_stud(const void *, const void *);
 
-void print_int(const void *);
-
 void print_s(const void *);
 
 void reverse(void *, const size_t, const size_t);

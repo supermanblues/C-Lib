@@ -45,39 +45,6 @@ static int stud_math_match(const void *key, const void *record)
   return (*k - r->math);
 }
 
-static void sum(void *prev, const void *cur)
-{
-  int *p = (int *) prev;
-  *p += * (int *) cur;
-}
-
-static void product(void *prev, const void *cur)
-{
-  int *p = (int *) prev;
-  *p *= * (int *) cur;
-}
-
-static void max(void *prev, const void *cur)
-{
-  int *p = (int *) prev;
-  int *c = (int *) cur;
-  *p = *c > *p ? *c : *p;
-}
-
-static void min(void *prev, const void *cur)
-{
-  int *p = (int *) prev;
-  int *c = (int *) cur;
-  *p = *c < *p ? *c : *p;
-}
-
-static void tot_stud_score(void *prev, const void *cur)
-{
-  struct Student *s = (struct Student *) cur;
-
-  *(float *) prev += (s->math + s->chinese) / 2.0;
-}
-
 void test_basic(void)
 {
   int i;
@@ -108,16 +75,28 @@ void test_basic(void)
   assert( *(int *) arr->min(arr, cmp_int) == *DATA );
   assert( *(int *) arr->max(arr, cmp_int) == *(DATA + DATA_SIZE - 1));
   
-  arr->accumulate(arr, &s, sum);
+  arr->accumulate(arr, &s, ^(void *prev, const void *cur) {
+    *(int *) prev += * (int *) cur;
+  });
   assert( s == 1 + 2 + 3 + 4 + 5 );
 
-  arr->accumulate(arr, &prod, product);
+  arr->accumulate(arr, &prod, ^(void *prev, const void *cur) {
+    *(int *) prev *= *(int *) cur;
+  });
   assert( prod == 1 * 2 * 3 * 4 * 5 );
 
-  arr->accumulate(arr, &maximum, max);
+  arr->accumulate(arr, &maximum, ^(void *prev, const void *cur) {
+    int *p = (int *) prev;
+    int *c = (int *) cur;
+    *p = *c > *p ? *c : *p;
+  });
   assert( maximum == *(int *) arr->max(arr, cmp_int) );
 
-  arr->accumulate(arr, &minimum, min);
+  arr->accumulate(arr, &minimum, ^(void *prev, const void *cur) {
+    int *p = (int *) prev;
+    int *c = (int *) cur;
+    *p = *c < *p ? *c : *p;
+  });
   assert( minimum == *(int *) arr->min(arr, cmp_int) );
 
   arr->reverse(arr);
@@ -178,7 +157,10 @@ void test_findAndSort(void)
   for (i = 0; i < STUD_SIZE; ++i)
     studs->push_back(studs, STUDS + i);
 
-  studs->travel(studs, print_s);
+  studs->travel(studs, ^(const void *r) {
+    const struct Student *s = (struct Student *) r;
+    printf("id: %d\tname: %s\tmath: %d\tchinese: %d\n", s->id, s->name, s->math, s->chinese);
+  });
   fputc(10, stdout);
 
   stud_id = 1, s = studs->search(studs, &stud_id, stud_id_match);
@@ -195,10 +177,12 @@ void test_findAndSort(void)
   print_s(studs->min(studs, cmp_stud_by_chinese));
   print_s(studs->max(studs, cmp_stud_by_chinese));
 
-  studs->accumulate(studs, &tot_score, tot_stud_score);
-  printf("总平均成绩为: %lf\n每名学生的平均成绩为: %.2lf\n", tot_score, tot_score / studs->size(studs));
+  studs->accumulate(studs, &tot_score, ^(void *prev, const void *cur) {
+    struct Student *s = (struct Student *) cur;
+    *(float *) prev += (s->math + s->chinese) / 2.0;
+  });
+  printf("总平均成绩为: %lf\n每名学生的平均成绩为: %.2lf\n", tot_score, tot_score / studs->length);
 
-  fputc(10, stdout);
   arr_destroy(studs);
 }
 

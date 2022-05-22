@@ -33,10 +33,10 @@ int arr_pop_back(struct ARRAY *);
 void arr_fill(struct ARRAY *, const void *);
 void * arr_max(struct ARRAY *, compar *);
 void * arr_min(struct ARRAY *, compar *);
-void arr_travel(struct ARRAY *, visit *);
+void arr_travel(struct ARRAY *, visit);
 void arr_sort(struct ARRAY *, compar *);
 void arr_reverse(struct ARRAY *);
-void arr_accumulate(struct ARRAY *, void *, void (*callback) (void *, const void *));
+void arr_accumulate(struct ARRAY *, void *, void (^callback) (void *, const void *));
 
 struct ARRAY * CreateArray(size_t init_capacity, int datasize)
 {
@@ -316,7 +316,7 @@ void * arr_min(struct ARRAY *ptr, compar *compar)
   return min;
 } 
 
-void arr_travel(struct ARRAY *ptr, visit *visit)
+void arr_travel(struct ARRAY *ptr, visit visit)
 {
   int i;
   void *cur;
@@ -360,7 +360,7 @@ void arr_reverse(struct ARRAY *ptr)
   free(tmp);
 }
 
-void arr_accumulate(struct ARRAY *ptr, void *init, void (*callback) (void *, const void *))
+void arr_accumulate(struct ARRAY *ptr, void *init, void (^callback) (void *, const void *))
 {
   int i;
   void *cur;

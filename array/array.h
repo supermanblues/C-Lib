@@ -10,7 +10,7 @@
 #define __ARRAY_H_
 
 typedef int compar(const void *, const void *);
-typedef void visit(const void *);
+typedef void (^visit)(const void *);
 
 #ifndef __COPY_DATA_
 #define __COPY_DATA_(dst, src, size) memcpy(dst, src, size);
@@ -82,7 +82,7 @@ typedef struct ARRAY
   void * (*min) (struct ARRAY *, compar *);
   
   /** 遍历数组 */
-  void (*travel) (struct ARRAY *, visit *);
+  void (*travel) (struct ARRAY *, visit);
 
   /** 排序数组 */
   void (*sort) (struct ARRAY *, compar *);
@@ -91,7 +91,7 @@ typedef struct ARRAY
   void (*reverse) (struct ARRAY *);
 
   /** 万能函数 such as max, min, sum, product and so on... */
-  void (*accumulate) (struct ARRAY *, void *, void (*callback) (void *, const void *));
+  void (*accumulate) (struct ARRAY *, void *, void (^callback) (void *, const void *));
 
 } ARRAY;
 
