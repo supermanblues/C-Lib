@@ -63,17 +63,17 @@ void test_basic(void)
     return *(int *) cur - *(int *) max;
   }) == *(DATA + DATA_SIZE - 1));
   
-  arr->accumulate(arr, &s, ^(void *prev, const void *cur) {
+  arr->accumulate(arr, &s, ^(int index, void *prev, const void *cur) {
     *(int *) prev += * (int *) cur;
   });
   assert( s == 1 + 2 + 3 + 4 + 5 );
 
-  arr->accumulate(arr, &prod, ^(void *prev, const void *cur) {
+  arr->accumulate(arr, &prod, ^(int index, void *prev, const void *cur) {
     *(int *) prev *= *(int *) cur;
   });
   assert( prod == 1 * 2 * 3 * 4 * 5 );
 
-  arr->accumulate(arr, &maximum, ^(void *prev, const void *cur) {
+  arr->accumulate(arr, &maximum, ^(int index, void *prev, const void *cur) {
     int *p = (int *) prev;
     int *c = (int *) cur;
     *p = *c > *p ? *c : *p;
@@ -83,7 +83,7 @@ void test_basic(void)
     return *(int *) cur - *(int *) max;
   }) );
 
-  arr->accumulate(arr, &minimum, ^(void *prev, const void *cur) {
+  arr->accumulate(arr, &minimum, ^(int index, void *prev, const void *cur) {
     int *p = (int *) prev;
     int *c = (int *) cur;
     *p = *c < *p ? *c : *p;
@@ -192,7 +192,7 @@ void test_findAndSort(void)
     return s1->chinese - s2->chinese;
   }));
 
-  studs->accumulate(studs, &tot_score, ^(void *prev, const void *cur) {
+  studs->accumulate(studs, &tot_score, ^(int index, void *prev, const void *cur) {
     struct Student *s = (struct Student *) cur;
     *(float *) prev += (s->math + s->chinese) / 2.0;
   });

@@ -397,7 +397,7 @@ void arr_reverse(struct ARRAY *ptr)
 }
 
 void arr_accumulate(struct ARRAY *ptr,
-                    void *init,
+                    void *prev,
                   #if __clang__
                     callback callback)
                   #else
@@ -414,7 +414,7 @@ void arr_accumulate(struct ARRAY *ptr,
        i < ptr->length;
        ++i, cur += ptr->datasize)
   {
-    callback(init, cur);
+    callback(i, prev, cur);
   }
 
   return;

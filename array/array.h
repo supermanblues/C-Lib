@@ -13,13 +13,13 @@
 
 typedef int (^compar)(const void *, const void *);
 typedef void (^visit)(const void *);
-typedef void (^callback)(void *, const void *);
+typedef void (^callback)(int, void *, const void *);
 
 #else
 
 typedef int compar(const void *, const void *);
 typedef void visit(const void *);
-typedef void callback(void *, const void *);
+typedef void callback(int, void *, const void *);
 
 #endif
 
