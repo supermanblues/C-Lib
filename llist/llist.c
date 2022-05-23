@@ -26,7 +26,11 @@ int llist_pop_front(struct LLIST *, void *);
 
 int llist_pop_back(struct LLIST *, void *);
 
+#if __clang__
 void llist_travel(struct LLIST *, visit);
+#else
+void llist_travel(struct LLIST *, visit *);
+#endif
 
 struct LLIST * llist_create(const int datasize)
 {
@@ -56,7 +60,7 @@ struct LLIST * llist_create(const int datasize)
   return ptr;
 }
 
-DEQUE* CreateDeque(const int datasize)
+DEQUE * dq_create(const int datasize)
 {
   return llist_create(datasize);
 }
@@ -185,7 +189,12 @@ int llist_pop_back(struct LLIST *ptr, void *data)
   return llist_delete(ptr, data, LLIST_BACKWARD);
 }
 
-void llist_travel(struct LLIST *ptr, visit visit)
+void llist_travel(struct LLIST *ptr,
+                #if __clang__
+                  visit visit)
+                #else
+                  visit *visit)
+                #endif
 {
   struct DuLNode *cur;
 
@@ -208,7 +217,7 @@ void llist_destroy(struct LLIST *ptr)
   free(ptr);
 }
 
-void DestroyDeque(DEQUE *ptr)
+void dq_destroy(DEQUE *ptr)
 {
   llist_destroy(ptr);
 }

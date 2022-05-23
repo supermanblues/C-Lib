@@ -17,7 +17,12 @@ signed main(int argc, char const *argv[])
   int i, x;
   struct SET *set = NULL;
 
-  set = set_create(sizeof(int), cmp_int);
+  set = set_create(sizeof(int), ^(const void *key, const void *record) {
+    int *k = (int *) key;
+    int *r = (int *) record;
+    return (*k - *r);
+  });
+
   if (set == NULL)
   {
     fprintf(stderr, "The set create failed. GoodBye!");

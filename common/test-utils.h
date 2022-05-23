@@ -38,15 +38,15 @@ static const struct Student STUDS[ STUD_SIZE ] = {
   {5, "stud5", 67, 92}
 };
 
-int cmp_int(const void *, const void *);
-
-int cmp_stud(const void *, const void *);
-
 void print_s(const void *);
 
 void reverse(void *, const size_t, const size_t);
 
-int is_sorted(const void *, const size_t, const size_t, int (*compar)(const void *, const void *));
+#if __clang__
+int is_sorted(const void *, const size_t, const size_t, int (^compar)(const void *, const void *));
+#endif
+
+int is_sorted2(const void *, const size_t, const size_t, int (*compar)(const void *, const void *));
 
 #endif
 /* ========================== Test Hepler Functions End ========================= */

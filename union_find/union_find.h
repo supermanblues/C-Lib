@@ -1,8 +1,8 @@
 /**
  * @author: wangxiaoqiang
- * @version: 0.0.4
+ * @version: 0.0.5
  * @create-date: 2022-04-25
- * @modify-date: 2022-05-15
+ * @modify-date: 2022-05-23
  * @description: UnionFind Header File
  */
 /* ========================= UnionFind (Disjoint Set) Start ========================= */
@@ -25,9 +25,9 @@ typedef struct UnionFind
 
 } UnionFind;
 
-struct UnionFind * CreateUnionFind(int);
+struct UnionFind * uf_create(int);
 
-void DestroyUnionFind(struct UnionFind *);
+void uf_destroy(struct UnionFind *);
 
 #endif
 /* ========================= UnionFind (Disjoint Set) End ========================= */

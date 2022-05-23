@@ -1,8 +1,8 @@
 /**
  * @author: waingxiaoqiang
  * @create-date: 2020-04-21
- * @modify-date: 2020-05-14
- * @version: 0.0.5
+ * @modify-date: 2020-05-23
+ * @version: 0.0.6
  * @description: Various Sorting Algorithm Header File
  */
 /* ========================== Sorting Start ========================= */
@@ -13,9 +13,10 @@
 #define __COPY_DATA_(dst, src, size) memcpy(dst, src, size)
 #endif
 
-#ifndef __COMPAR_
-#define __COMPAR_
-typedef int compar(const void *a, const void *b);
+#if __clang__
+typedef int (^compar)(const void *, const void *);
+#else
+typedef int compar(const void *, const void *);
 #endif
 
 typedef enum
@@ -29,12 +30,15 @@ typedef enum
 
 typedef struct MySort
 {
-  void (*sort) (void *, const size_t, const size_t, compar *, SORT_MODE);
+#if __clang__
+  void (*sort) (void *, const size_t, const size_t, compar, int);
+#else
+  void (*sort) (void *, const size_t, const size_t, compar *, int);
+#endif
 } MySort;
 
-struct MySort * CreateMySort(void);
+struct MySort * mysort_create(void);
 
-void DestroyMySort(struct MySort *);
-
+void mysort_destroy(struct MySort *);
 #endif
 /* ========================== Sorting End ========================= */

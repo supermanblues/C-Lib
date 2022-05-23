@@ -1,6 +1,6 @@
 CC=clang
 TARGET=main
-OBJS=main.o array.o
+OBJS= array.o main.o
 LIBS=-ltest-utils
 CFLAGS+=-std=c11 -g -Wall -O2
 

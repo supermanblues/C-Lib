@@ -1,6 +1,6 @@
 CC=clang
 TARGET=main
-OBJS=main.o common.o test-utils.o
+OBJS=common.o test-utils.o main.o
 CFLAGS+=-std=c11 -g -Wall -O2
 
 ${TARGET}:$(OBJS)

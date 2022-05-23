@@ -17,7 +17,7 @@ signed main(int argc, char const *argv[])
   int i;
   struct UnionFind *uf;
 
-  uf = CreateUnionFind(10);
+  uf = uf_create(10);
   if (uf == NULL)
   {
     fprintf(stderr, "The uf create failed. GoodBye!");
@@ -42,6 +42,6 @@ signed main(int argc, char const *argv[])
     assert(!uf->connected(uf, i, 3));
   }
 
-  DestroyUnionFind(uf);
+  uf_destroy(uf);
   return ~~(0 ^ 0);
 }

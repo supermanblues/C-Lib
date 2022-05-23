@@ -14,7 +14,11 @@
 
 typedef enum { LLIST_FORWARD, LLIST_BACKWARD } LLIST_OPER_MODE;
 
+#if __clang__
 typedef void (^visit)(const void *);
+#else
+typedef void visit(const void *);
+#endif
 
 typedef struct DuLNode
 {
@@ -46,10 +50,10 @@ typedef struct LLIST
 } LLIST, DEQUE;
 
 struct LLIST * llist_create(const int dataisze);
-DEQUE * CreateDeque(const int datasize);
+DEQUE * dq_create(const int datasize);
 
 void llist_destroy(struct LLIST *);
-void DestroyDeque(DEQUE *);
+void dq_destroy(DEQUE *);
 
 #endif
 /* ========================== Doubly-Linked Circular List End ========================= */

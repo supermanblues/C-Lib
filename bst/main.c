@@ -12,14 +12,6 @@
 #include "bst.h"
 #include <test-utils.h>
 
-static int cmp_by_stu_chinese(const void *key, const void *record)
-{
-  const int *k = (int *) key;
-  const struct Student *r = (struct Student *) record;
-
-  return (*k - r->chinese);
-}
-
 void test(void)
 {
   int i, x;
@@ -31,9 +23,14 @@ void test(void)
 
   printf("\033[2J\033[?25l"); // clear screen and not display cursor
 
-  bst1 = bst_create(sizeof(int), cmp_int, ^(const void *data) {
-    printf("%d ", *(int *) data);
+  bst1 = bst_create(sizeof(int), ^(const void *key, const void *record) {
+    int *k = (int *) key;
+    int *r = (int *) record; 
+    return (*k - *r);
+  }, ^(const void *record) {
+    printf("%d ", *(int *) record);
   });
+
   if (bst1 == NULL)
   {
     fprintf(stderr, "The bst1 create failed. GoodBye!\n");
@@ -84,7 +81,11 @@ void test(void)
   fputs("\n\n\033[36;7m后序遍历：\033[0m\n", stdout);
   bst1->travel(bst1, BST_TRAVEL_POSTORDER);
 
-  bst2 = bst_create(sizeof(struct Student), cmp_by_stu_chinese, ^(const void *r) {
+  bst2 = bst_create(sizeof(struct Student), ^(const void *key, const void *record) {
+    const int *k = (int *) key;
+    const struct Student *r = (struct Student *) record;
+    return (*k - r->chinese);
+  }, ^(const void *r) {
     const struct Student *s = (struct Student *) r;
     printf("id: %d\tname: %s\tmath: %d\tchinese: %d\n", s->id, s->name, s->math, s->chinese);
   });

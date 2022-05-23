@@ -14,12 +14,17 @@ typedef enum { BST_TRAVEL_LEVELORDER,
                BST_TRAVEL_INORDER,
                BST_TRAVEL_POSTORDER } BST_TRAVEL_MODE;
 
-typedef int compar(const void *, const void *);
+#if __clang__
 
 typedef void (^visit)(const void *);
+typedef int (^compar)(const void *, const void *);
 
-#define bst_create(datasize, compar, visit) CreateBST(datasize, compar, visit)
-#define bst_destroy(ptr) DestroyBST(ptr)
+#else
+
+typedef void visit(const void *);
+typedef int compar(const void *, const void *);
+
+#endif
 
 typedef struct TreeNode
 {
@@ -34,10 +39,13 @@ typedef struct BST
   int datasize;
   size_t length;
 
-  /** 访问BST中节点数据的回调函数 */
+#if __clang__
   visit visit;
-
+  compar compar;
+#else
+  visit *visit;
   compar *compar;
+#endif
 
   /** 判断BST是否为空  */
   int (*empty) (struct BST *);
@@ -79,11 +87,13 @@ typedef struct BST
 
 } BST;
 
-// Deprecated: use bst_create instead
-struct BST * CreateBST(int datasize, compar *, visit);
+#if __clang__
+struct BST * bst_create(int datasize, compar, visit);
+#else
+struct BST * bst_create(int datasize, compar *, visit *);
+#endif
 
-// Deprecated: use bst_destroy instead
-void DestroyBST(struct BST *);
+void bst_destroy(struct BST *);
 
 #endif
 /* ========================== BST End ========================= */

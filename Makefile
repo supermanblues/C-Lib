@@ -12,7 +12,23 @@ $(TARGET):$(OBJS)
 
 clean:
 	$(RM) *.o $(TARGET)
-# 	find . -name "*.o"  | xargs rm -f *.o
+
+test:
+	$(MAKE) clean
+	$(MAKE)
+	./$(TARGET)
+
+install:
+	$(MAKE) -C common install
+	$(MAKE) -C sort install
+	$(MAKE) -C array install
+	$(MAKE) -C llist install
+	$(MAKE) -C stack install
+	$(MAKE) -C queue install
+	$(MAKE) -C bst install
+	$(MAKE) -C set install
+	$(MAKE) -C trie install
+	$(MAKE) -C union_find install
 
 integration-test:
 	$(MAKE) -C common test
@@ -26,6 +42,4 @@ integration-test:
 	$(MAKE) -C trie test
 	$(MAKE) -C union_find test
 
-	$(MAKE) clean
-	$(MAKE)
-	./$(TARGET)
+	$(MAKE) test

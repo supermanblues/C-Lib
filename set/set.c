@@ -17,7 +17,12 @@ int set_add(struct SET *, const void *, const void *);
 int set_contains(struct SET *, const void *);
 int set_remove(struct SET *, const void *);
 
-struct SET * set_create(int datasize, compar *compar)
+struct SET * set_create(int datasize,
+                      #if __clang__
+                        compar compar)
+                      #else
+                        compar *compar)
+                      #endif
 {
   struct SET *ptr = NULL;
 

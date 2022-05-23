@@ -1,8 +1,8 @@
 /**
  * @author: waingxiaoqiang
  * @create-date: 2020-05-13
- * @modify-date: 2020-05-13
- * @version: 0.0.1
+ * @modify-date: 2020-05-24
+ * @version: 0.0.2
  * @description: Dynamic Array Unit Tests File
  */
 #include <stdio.h>
@@ -19,30 +19,6 @@ static int cmp_by_stud_math_desc(const void * a, const void *b)
   struct Student *s2 = (struct Student *) b;
 
   return (s2->math - s1->math);
-}
-
-static int cmp_stud_by_chinese(const void *a, const void *b)
-{
-  const struct Student *s1 = (struct Student *) a;
-  const struct Student *s2 = (struct Student *) b;
-
-  return s1->chinese - s2->chinese;
-}
-
-static int stud_id_match(const void *key, const void *record)
-{
-  const int *k = (int *) key;
-  const struct Student *r = (struct Student *) record;
-
-  return (*k - r->id);
-}
-
-static int stud_math_match(const void *key, const void *record)
-{
-  const int *k = (int *) key;
-  const struct Student *r = (struct Student *) record;
-
-  return (*k - r->math);
 }
 
 void test_basic(void)
@@ -62,8 +38,14 @@ void test_basic(void)
   assert( arr->size(arr) == 0 );
   assert( arr->front(arr) == NULL );
   assert( arr->back(arr) == NULL );
-  assert( arr->max(arr, cmp_int) == NULL );
-  assert( arr->min(arr, cmp_int) == NULL );
+  
+  assert( arr->max(arr, ^(const void *cur, const void *max) {
+    return *(int *) cur - *(int *) max;
+  }) == NULL );
+
+  assert( arr->min(arr, ^(const void *cur, const void *min) {
+    return *(int *) cur - *(int *) min;
+  }) == NULL );
 
   for (i = 0; i < DATA_SIZE; ++i)
     arr->push_front(arr, DATA + i);
@@ -72,8 +54,14 @@ void test_basic(void)
   assert( arr->size(arr) == DATA_SIZE );
   assert( *(int *) arr->back(arr) == *DATA );
   assert( *(int *) arr->front(arr) == *(DATA + DATA_SIZE - 1) );
-  assert( *(int *) arr->min(arr, cmp_int) == *DATA );
-  assert( *(int *) arr->max(arr, cmp_int) == *(DATA + DATA_SIZE - 1));
+
+  assert( *(int *) arr->min(arr, ^(const void *cur, const void *min) {
+    return *(int *) cur - *(int *) min;
+  }) == *DATA );
+
+  assert( *(int *) arr->max(arr, ^(const void *cur, const void *max) {
+    return *(int *) cur - *(int *) max;
+  }) == *(DATA + DATA_SIZE - 1));
   
   arr->accumulate(arr, &s, ^(void *prev, const void *cur) {
     *(int *) prev += * (int *) cur;
@@ -90,14 +78,20 @@ void test_basic(void)
     int *c = (int *) cur;
     *p = *c > *p ? *c : *p;
   });
-  assert( maximum == *(int *) arr->max(arr, cmp_int) );
+  
+  assert( maximum == *(int *) arr->max(arr, ^(const void *cur, const void *max) {
+    return *(int *) cur - *(int *) max;
+  }) );
 
   arr->accumulate(arr, &minimum, ^(void *prev, const void *cur) {
     int *p = (int *) prev;
     int *c = (int *) cur;
     *p = *c < *p ? *c : *p;
   });
-  assert( minimum == *(int *) arr->min(arr, cmp_int) );
+
+  assert( minimum == *(int *) arr->min(arr, ^(const void *cur, const void *min) {
+    return *(int *) cur - *(int *) min;
+  }) );
 
   arr->reverse(arr);
   for (i = 0; i < DATA_SIZE; ++i)
@@ -145,9 +139,8 @@ void test_findAndSort(void)
   int stud_id, stud_math;
 
   struct ARRAY *studs = NULL;
-  struct Student *s = NULL;
 
-  studs = Create_Array(sizeof *s);
+  studs = Create_Array(sizeof *STUDS);
   if (studs == NULL)
   {
     fprintf(stderr, "The studs create failed. GoodBye!");
@@ -163,19 +156,41 @@ void test_findAndSort(void)
   });
   fputc(10, stdout);
 
-  stud_id = 1, s = studs->search(studs, &stud_id, stud_id_match);
-  assert( __IS_SAME_(s, STUDS, sizeof *s) );
+  stud_id = 1;
+  assert( __IS_SAME_(studs->search(studs, &stud_id, ^(const void *key, const void *record) {
+    const int *k = (int *) key;
+    const struct Student *r = (struct Student *) record;
+    return (*k - r->id);
+  }), STUDS, sizeof *STUDS) );
 
-  stud_id = 10, assert( studs->search(studs, &stud_id, stud_id_match) == NULL);
+  stud_id = 10;
+  assert( studs->search(studs, &stud_id, ^(const void *key, const void *record) {
+    const int *k = (int *) key;
+    const struct Student *r = (struct Student *) record;
+    return (*k - r->id);
+  }) == NULL);
 
-  stud_math = 67, s = studs->search(studs, &stud_math, stud_math_match);
-  assert( __IS_SAME_(s, STUDS + 4, sizeof *s) );
+  stud_math = 67;
+  assert( __IS_SAME_(studs->search(studs, &stud_math, ^(const void *key, const void *record) {
+    const int *k = (int *) key;
+    const struct Student *r = (struct Student *) record;
+    return (*k - r->math);
+  }), STUDS + 4, sizeof *STUDS) );
   
   studs->sort(studs, cmp_by_stud_math_desc);
-  assert( is_sorted(studs->base, studs->size(studs), studs->datasize, cmp_by_stud_math_desc) );
+  assert( is_sorted2(studs->base, studs->size(studs), studs->datasize, cmp_by_stud_math_desc) );
 
-  print_s(studs->min(studs, cmp_stud_by_chinese));
-  print_s(studs->max(studs, cmp_stud_by_chinese));
+  print_s(studs->min(studs, ^(const void *cur, const void *min) {
+    const struct Student *s1 = (struct Student *) cur;
+    const struct Student *s2 = (struct Student *) min;
+    return s1->chinese - s2->chinese;
+  }));
+
+  print_s(studs->max(studs, ^(const void *cur, const void *max) {
+    const struct Student *s1 = (struct Student *) cur;
+    const struct Student *s2 = (struct Student *) max;
+    return s1->chinese - s2->chinese;
+  }));
 
   studs->accumulate(studs, &tot_score, ^(void *prev, const void *cur) {
     struct Student *s = (struct Student *) cur;

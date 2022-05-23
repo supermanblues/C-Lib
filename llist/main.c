@@ -168,7 +168,7 @@ void test_mock_deque()
   DEQUE *dq = NULL;
   struct Student s;
 
-  dq = CreateDeque(sizeof(struct Student));
+  dq = dq_create(sizeof(struct Student));
   if (dq == NULL)
   {
     fprintf(stderr, "The dq create failed. GoodBye\n");
@@ -206,7 +206,7 @@ void test_mock_deque()
   while (dq->pop_front(dq, &s) == 0)
     continue;
 
-  DestroyDeque(dq);
+  dq_destroy(dq);
 }
 
 signed main(int argc, char const *argv[])

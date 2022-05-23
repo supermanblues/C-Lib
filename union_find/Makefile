@@ -1,6 +1,6 @@
 CC=clang
 TARGET=main
-OBJS=main.o union_find.o
+OBJS=union_find.o main.o
 LIBS=-larray -ltest-utils
 CFLAGS+=-std=c11 -g -Wall -O2
 

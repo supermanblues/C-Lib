@@ -15,7 +15,6 @@
 /* 面向切面（AOP）的编程思想 --- 小型的测试框架 */
 void test_sort(struct MySort *ps, SORT_MODE mode)
 {
-  // 调用方法时重新定义测试数据
   int ints[] = { 49, 38, 65, 97, 76, 13, 27, 49, -2, 100, 229 };
   struct Student studs[] = {
       {5, "zhang", 44, 69},
@@ -27,8 +26,25 @@ void test_sort(struct MySort *ps, SORT_MODE mode)
   };
 
   size_t num = sizeof(ints) / sizeof(*ints);
-  ps->sort(ints, num, sizeof(*ints), cmp_int, mode);
-  assert( is_sorted(ints, num, sizeof(*ints), cmp_int) );
+
+  int (^int_asc)(const void *, const void *) = ^(const void *a, const void *b) {
+    return *(int *) a - *(int *) b;
+  };
+
+  int (^cmp_stud)(const void *, const void *) = ^(const void *a, const void *b) {
+    const struct Student *s1 = (struct Student *) a;
+    const struct Student *s2 = (struct Student *) b;
+
+    /* 按数学成绩从高到低排序 */
+    if (s1->math != s2->math)
+      return s2->math - s1->math;
+
+    /* 按学号从小到大排序 */
+    return (s1->id - s2->id);
+  };
+
+  ps->sort(ints, num, sizeof(*ints), int_asc, mode);
+  assert( is_sorted(ints, num, sizeof(*ints), int_asc) );
 
   num = sizeof(studs) / sizeof(*studs);
   ps->sort(studs, num, sizeof(*studs), cmp_stud, mode);
@@ -39,7 +55,7 @@ signed main(int argc, char const *argv[])
 { 
   struct MySort *ps = NULL;
 
-  ps = CreateMySort();
+  ps = mysort_create();
   if (ps == NULL)
   {
     fprintf(stderr, "The ps create failed, GoodBye!");
@@ -51,6 +67,6 @@ signed main(int argc, char const *argv[])
   test_sort(ps, INSERTION_SORT);
   test_sort(ps, QUICK_SORT);
 
-  DestroyMySort(ps);
+  mysort_destroy(ps);
   return ~~(0 ^ 0);
 }

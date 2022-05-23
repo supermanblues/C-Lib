@@ -1,8 +1,8 @@
 /**
  * @author: waingxiaoqiang
  * @create-date: 2020-05-02
- * @modify-date: 2020-05-16
- * @version: 0.0.2
+ * @modify-date: 2020-05-23
+ * @version: 0.0.3
  * @description: Singly-Linked List Header File
  */
 /* ========================== Singly Linked List Start ========================= */
@@ -16,8 +16,11 @@
 #define __COPY_DATA_(dst, src, size) memcpy(dst, src, size)
 #endif
 
-typedef int compar(const void *, const void *);
+#if __clang__
 typedef void (^visit)(const void *);
+#else
+typedef void visit(const void *);
+#endif
 
 typedef struct SListNode
 {
@@ -43,9 +46,13 @@ typedef struct SLIST
   int (*push_back) (struct SLIST *, const void *);
   int (*pop_front) (struct SLIST *, void *);
 
-  void (*travel) (struct SLIST *, visit);
   void (*reverse) (struct SLIST *);
-  void (*sort) (struct SLIST *, compar *);
+
+#if __clang__
+  void (*travel) (struct SLIST *, visit);
+#else
+  void (*travel) (struct SLIST *, visit *);
+#endif
 
 } SLIST;
 

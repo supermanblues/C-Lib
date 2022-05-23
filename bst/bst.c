@@ -40,12 +40,24 @@ void bst_travel(struct BST *, int mode);
 
 static size_t bst_count_(struct TreeNode *);
 
+#if __clang__
+static void * bst_search_(struct TreeNode *, const void *, compar);
+
+static int 
+bst_insert_(struct TreeNode **, const void *, const void *, const size_t, compar);
+
+static struct TreeNode * bst_delete_(struct TreeNode *, const void *, compar);
+
+#else
+
 static void * bst_search_(struct TreeNode *, const void *, compar *);
 
 static int 
 bst_insert_(struct TreeNode **, const void *, const void *, const size_t, compar *);
 
 static struct TreeNode * bst_delete_(struct TreeNode *, const void *, compar *);
+
+#endif
 
 static struct TreeNode * bst_max_(struct TreeNode *);
 
@@ -59,48 +71,55 @@ static void bst_turn_left(struct TreeNode **);
 
 static void bst_turn_right(struct TreeNode **);
 
-struct BST * CreateBST(int datasize, compar *compar, visit visit)
+struct BST * bst_create(int datasize,
+                      #if __clang__ 
+                        compar compar,
+                        visit visit)
+                      #else
+                        compar *compar,
+                        visit *visit)
+                      #endif
 {
-  struct BST *bst = NULL;
+  struct BST *ptr = NULL;
 
   if (datasize <= 0 || compar == NULL)
     return NULL;
 
-  bst = (struct BST *) malloc(sizeof *bst);
-  if (bst == NULL)
+  ptr = (struct BST *) malloc(sizeof *ptr);
+  if (ptr == NULL)
     return NULL;
 
-  bst->root     = NULL;
-  bst->compar   = compar;
-  bst->visit    = visit;
-  bst->datasize = datasize;
-  bst->length   = 0;
+  ptr->root     = NULL;
+  ptr->compar   = compar;
+  ptr->visit    = visit;
+  ptr->datasize = datasize;
+  ptr->length   = 0;
 
   /* =============== Operations =============== */
-  bst->empty   = bst_empty;
-  bst->size    = bst_size;
-  bst->count   = bst_count;
-  bst->draw    = bst_draw;
-  bst->search  = bst_search;
-  bst->insert  = bst_insert;
-  bst->delete  = bst_delete;
-  bst->max     = bst_max;
-  bst->min     = bst_min;
-  bst->height  = bst_height;
-  bst->balance = bst_balance;
-  bst->travel  = bst_travel;
+  ptr->empty   = bst_empty;
+  ptr->size    = bst_size;
+  ptr->count   = bst_count;
+  ptr->draw    = bst_draw;
+  ptr->search  = bst_search;
+  ptr->insert  = bst_insert;
+  ptr->delete  = bst_delete;
+  ptr->max     = bst_max;
+  ptr->min     = bst_min;
+  ptr->height  = bst_height;
+  ptr->balance = bst_balance;
+  ptr->travel  = bst_travel;
 
-  return bst;
+  return ptr;
 }
 
-size_t bst_size(struct BST *bst)
+size_t bst_size(struct BST *ptr)
 {
-  return bst->length;
+  return ptr->length;
 }
 
-size_t bst_count(struct BST *bst)
+size_t bst_count(struct BST *ptr)
 {
-  return bst_count_(bst->root);
+  return bst_count_(ptr->root);
 }
 
 static size_t bst_count_(struct TreeNode *root)
@@ -128,30 +147,36 @@ static void bst_draw_(struct TreeNode *root, int d, int l, int r)
   bst_draw_(root->right, d + 1, mid + 1, r);
 }
 
-void bst_draw(struct BST *bst)
+void bst_draw(struct BST *ptr)
 {
-  if (bst->root == NULL)
+  if (ptr->root == NULL)
     return;
 
-  int h = bst_height_(bst->root);
+  int h = bst_height_(ptr->root);
   int w = (1 << h) - 1;
 
   printf("\033[1;80H\033[32;3;5mBinary Search Tree:\033[0m");
-  bst_draw_(bst->root, 1, 0, w - 1);
+  bst_draw_(ptr->root, 1, 0, w - 1);
   fputc(10, stdout);
 }
 
-int bst_empty(struct BST *bst)
+int bst_empty(struct BST *ptr)
 {
-  return (bst->root == NULL);
+  return (ptr->root == NULL);
 }
 
-void * bst_search(struct BST *bst, const void *key)
+void * bst_search(struct BST *ptr, const void *key)
 {
-  return bst_search_(bst->root, key, bst->compar);
+  return bst_search_(ptr->root, key, ptr->compar);
 }
 
-static void * bst_search_(struct TreeNode *root, const void *key, compar *compar)
+static void * bst_search_(struct TreeNode *root,
+                          const void *key,
+                        #if __clang__ 
+                          compar compar)
+                        #else
+                          compar *compar)
+                        #endif
 {
   int sub;
 
@@ -176,7 +201,13 @@ int bst_delete(struct BST *bst, const void *key)
   return 0;
 }
 
-static struct TreeNode * bst_delete_(struct TreeNode *root, const void *key, compar *compar)
+static struct TreeNode * bst_delete_(struct TreeNode *root,
+                                     const void *key,
+                                  #if __clang__ 
+                                     compar compar)
+                                  #else
+                                     compar *compar)
+                                  #endif
 {
 
   int sub;
@@ -227,7 +258,11 @@ static int bst_insert_(struct TreeNode **root,
                    const void *key,
                    const void *data,
                    const size_t datasize,
+                 #if __clang__
+                   compar compar)
+                 #else
                    compar *compar)
+                 #endif
 {
   int sub;
 
@@ -542,7 +577,7 @@ static void destroy_node_(struct TreeNode *root)
   free(root);
 }
 
-void DestroyBST(struct BST *bst)
+void bst_destroy(struct BST *bst)
 {
   if (bst == NULL)
     return;

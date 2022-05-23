@@ -19,7 +19,6 @@ void * arr_get(struct ARRAY *, int index);
 void * arr_front(struct ARRAY *);
 void * arr_back(struct ARRAY *);
 
-void * arr_search(struct ARRAY *, const void *key, compar *);
 
 int arr_insert(struct ARRAY *, int, const void *);
 int arr_delete(struct ARRAY *, int);
@@ -29,16 +28,30 @@ int arr_push_front(struct ARRAY *, const void *);
 int arr_push_back(struct ARRAY *, const void *);
 int arr_pop_front(struct ARRAY *);
 int arr_pop_back(struct ARRAY *);
-
 void arr_fill(struct ARRAY *, const void *);
+
+#if __clang__
+
+void arr_travel(struct ARRAY *, visit);
+void * arr_search(struct ARRAY *, const void *key, compar);
+void * arr_max(struct ARRAY *, compar);
+void * arr_min(struct ARRAY *, compar);
+void arr_accumulate(struct ARRAY *, void *, callback);
+
+#else
+
+void arr_travel(struct ARRAY *, visit *);
+void * arr_search(struct ARRAY *, const void *key, compar *);
 void * arr_max(struct ARRAY *, compar *);
 void * arr_min(struct ARRAY *, compar *);
-void arr_travel(struct ARRAY *, visit);
-void arr_sort(struct ARRAY *, compar *);
-void arr_reverse(struct ARRAY *);
-void arr_accumulate(struct ARRAY *, void *, void (^callback) (void *, const void *));
+void arr_accumulate(struct ARRAY *, void *, callback *);
 
-struct ARRAY * CreateArray(size_t init_capacity, int datasize)
+#endif
+
+void arr_sort(struct ARRAY *, int (*compar)(const void *, const void *));
+void arr_reverse(struct ARRAY *);
+
+struct ARRAY * arr_create(size_t init_capacity, int datasize)
 {
   struct ARRAY *ptr = NULL;
 
@@ -148,7 +161,14 @@ void * arr_back(struct ARRAY *ptr)
   return arr_get(ptr, ptr->length - 1);
 }
 
-void * arr_search(struct ARRAY *ptr, const void *key, compar *compar)
+void * arr_search(struct ARRAY *ptr,
+                  const void *key,
+                #if __clang__
+                  compar compar)
+                #else
+                  compar *compar)
+                #endif
+                
 { // 循序查找法
   int i;
   void *cur;
@@ -276,7 +296,12 @@ void arr_fill(struct ARRAY *ptr, const void *data)
   return;
 }
 
-void * arr_max(struct ARRAY *ptr, compar *compar)
+void * arr_max(struct ARRAY *ptr,
+            #if __clang__
+               compar compar)
+            #else
+               compar *compar)
+            #endif
 {
   int i;
   void *max, *cur;
@@ -296,7 +321,12 @@ void * arr_max(struct ARRAY *ptr, compar *compar)
   return max;
 } 
 
-void * arr_min(struct ARRAY *ptr, compar *compar)
+void * arr_min(struct ARRAY *ptr,
+            #if __clang__
+               compar compar)
+            #else
+               compar *compar)
+            #endif
 {
   int i;
   void *min, *cur;
@@ -316,7 +346,13 @@ void * arr_min(struct ARRAY *ptr, compar *compar)
   return min;
 } 
 
-void arr_travel(struct ARRAY *ptr, visit visit)
+void arr_travel(struct ARRAY *ptr,
+              #if __clang__
+                  visit visit)
+              #else 
+                  visit *visit)
+              #endif
+
 {
   int i;
   void *cur;
@@ -331,10 +367,10 @@ void arr_travel(struct ARRAY *ptr, visit visit)
   return;
 }
 
-void arr_sort(struct ARRAY *ptr, compar *compar)
+void arr_sort(struct ARRAY *ptr, int (*compar)(const void *, const void *))
 {
   qsort(ptr->base, ptr->length, ptr->datasize, compar);
-}
+} 
 
 void arr_reverse(struct ARRAY *ptr)
 {
@@ -360,7 +396,13 @@ void arr_reverse(struct ARRAY *ptr)
   free(tmp);
 }
 
-void arr_accumulate(struct ARRAY *ptr, void *init, void (^callback) (void *, const void *))
+void arr_accumulate(struct ARRAY *ptr,
+                    void *init,
+                  #if __clang__
+                    callback callback)
+                  #else
+                    callback *callback)
+                  #endif
 {
   int i;
   void *cur;
@@ -378,7 +420,7 @@ void arr_accumulate(struct ARRAY *ptr, void *init, void (^callback) (void *, con
   return;
 }
 
-void DestroyArray(struct ARRAY *ptr)
+void arr_destroy(struct ARRAY *ptr)
 {
   free(ptr->base);
   free(ptr);

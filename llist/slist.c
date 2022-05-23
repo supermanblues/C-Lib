@@ -19,10 +19,13 @@ const void * slist_back(struct SLIST *);
 int slist_push_front(struct SLIST *, const void *);
 int slist_push_back(struct SLIST *, const void *);
 int slist_pop_front(struct SLIST *, void *);
-
-void slist_travel(struct SLIST *, visit);
 void slist_reverse(struct SLIST *);
-void slist_sort(struct SLIST *, compar *);
+
+#if __clang__
+void slist_travel(struct SLIST *, visit);
+#else
+void slist_travel(struct SLIST *, visit *);
+#endif
 
 struct SLIST * slist_create(int datasize)
 {
@@ -51,7 +54,6 @@ struct SLIST * slist_create(int datasize)
 
   ptr->travel  = slist_travel;
   ptr->reverse = slist_reverse;
-  ptr->sort    = slist_sort;
 
   return ptr;
 }
@@ -155,7 +157,12 @@ int slist_pop_front(struct SLIST *ptr, void *data)
   return 0;
 }
 
-void slist_travel(struct SLIST *ptr, visit visit)
+void slist_travel(struct SLIST *ptr,
+                 #if __clang__
+                  visit visit)
+                 #else
+                  visit *visit)
+                 #endif
 {
   struct SListNode *cur = NULL;
 
@@ -183,62 +190,6 @@ void slist_reverse(struct SLIST *ptr)
 {
   ptr->tail = ptr->head;
   ptr->head = reverse_(ptr->head);
-}
-
-static inline SListNode * slist_merge(struct SListNode *l1, struct SListNode *l2, compar *cmp, struct SListNode **tail)
-{
-  struct SListNode dummy, *p = &dummy;
-
-  if (l1 == NULL || l2 == NULL)
-    return l1 != NULL ? l1 : l2;
-
-  while (l1 != NULL && l2 != NULL)
-  {
-    if (cmp(l1->data, l2->data) < 0)
-    {
-      p = p->next = l1;
-      l1 = l1->next;
-    } 
-    else
-    {
-      p = p->next = l2;
-      l2 = l2->next;
-    }
-  }
-
-  p->next = l1 ? l1 : l2;
-  while (p->next != NULL)
-    p = p->next;
-
-  *tail = p;
-  return dummy.next;
-}
-
-static struct SListNode * slist_sort_(struct SListNode *head, compar *cmp, struct SListNode **tail)
-{
-  struct SListNode *slow  = NULL;
-  struct SListNode *fast  = NULL;
-  struct SListNode *head2 = NULL;
-
-  if (head == NULL || head->next == NULL)
-    return head;
-
-  slow = head, fast = head->next;
-  while (fast != NULL && fast->next != NULL)
-  {
-    slow = slow->next;
-    fast = fast->next->next;
-  }
-
-  head2 = slow->next;
-  slow->next = NULL;
-
-  return slist_merge(slist_sort_(head, cmp, tail), slist_sort_(head2, cmp, tail), cmp, tail);
-}
-
-void slist_sort(struct SLIST *ptr, compar *cmp)
-{
-  ptr->head = slist_sort_(ptr->head, cmp, &ptr->tail);
 }
 
 void slist_destroy(struct SLIST *ptr)

@@ -1,26 +1,33 @@
 /*
  * @author: waingxiaoqiang
  * @create-date: 2020-05-13
- * @modify-date: 2020-05-16
- * @version: 0.0.3
+ * @modify-date: 2020-05-23
+ * @version: 0.0.5
  * @description: Dynamic Array Header File
  */
 /* ========================== Dynamic Array Start ========================= */
 #ifndef __ARRAY_H_
 #define __ARRAY_H_
 
-typedef int compar(const void *, const void *);
+#if __clang__
+
+typedef int (^compar)(const void *, const void *);
 typedef void (^visit)(const void *);
+typedef void (^callback)(void *, const void *);
+
+#else
+
+typedef int compar(const void *, const void *);
+typedef void visit(const void *);
+typedef void callback(void *, const void *);
+
+#endif
 
 #ifndef __COPY_DATA_
 #define __COPY_DATA_(dst, src, size) memcpy(dst, src, size);
 #endif
 
-#define Create_Array(datasize) CreateArray(1, datasize)
-#define arr_create(init_capacity, datasize) \
-    CreateArray(init_capacity, datasize)
-
-#define arr_destroy(ptr) DestroyArray(ptr)
+#define Create_Array(datasize) arr_create(1, datasize)
 
 typedef struct ARRAY
 {
@@ -50,9 +57,6 @@ typedef struct ARRAY
   /** 返回数组中最后一个位置元素的内存地址 */
   void * (*back) (struct ARRAY *);
 
-  /** 查找数组元素 */
-  void * (*search) (struct ARRAY *, const void *key, compar *);
-
   /** 
    * 在数组中第 index (0-based) 个位置前插入元素
    * @return -1: index不合法; 0: 插入成功; (理论上不存在空间占满的情况)
@@ -78,31 +82,42 @@ typedef struct ARRAY
   /** 填充数组 */
   void (*fill) (struct ARRAY *, const void *);
 
-  void * (*max) (struct ARRAY *, compar *);
-  void * (*min) (struct ARRAY *, compar *);
-  
-  /** 遍历数组 */
+#if __clang__
   void (*travel) (struct ARRAY *, visit);
 
+  void * (*search) (struct ARRAY *, const void *key, compar);
+
+  void * (*max) (struct ARRAY *, compar);
+  
+  void * (*min) (struct ARRAY *, compar);
+
+  void (*accumulate) (struct ARRAY *, void *, callback);
+#else
+  void (*travel) (struct ARRAY *, visit *);
+
+  void * (*search) (struct ARRAY *, const void *key, compar *);
+
+  void * (*max) (struct ARRAY *, compar *);
+  
+  void * (*min) (struct ARRAY *, compar *);
+
+  void (*accumulate) (struct ARRAY *, void *, callback *);
+#endif
+
   /** 排序数组 */
-  void (*sort) (struct ARRAY *, compar *);
+  void (*sort) (struct ARRAY *, int (*compar)(const void *, const void *));
 
   /** 逆置数组 */
   void (*reverse) (struct ARRAY *);
-
-  /** 万能函数 such as max, min, sum, product and so on... */
-  void (*accumulate) (struct ARRAY *, void *, void (^callback) (void *, const void *));
 
 } ARRAY;
 
 struct ARRAY * arr_create2D(size_t init_capacity, int datasize);
 void arr_destroy2D(struct ARRAY *);
 
-// Deprecated: use arr_create instead
-struct ARRAY * CreateArray(size_t init_capacity, int datasize);
+struct ARRAY * arr_create(size_t init_capacity, int datasize);
 
-// Deprecated: use arr_destroy instead
-void DestroyArray(struct ARRAY *);
+void arr_destroy(struct ARRAY *);
 
 #endif
 /* ========================== Dynamic Array End   ========================= */
