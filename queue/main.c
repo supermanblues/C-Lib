@@ -54,7 +54,7 @@ void test_LinkQueue(void)
   struct Student studs[STUD_SIZE];
   struct LinkQueue *q = NULL;
 
-  q = CreateLinkQueue(sizeof *studs);
+  q = lqu_create(sizeof *studs);
   if (q == NULL)
   {
     fprintf(stderr, "The q create failed. GoodBye!\n");
@@ -83,7 +83,7 @@ void test_LinkQueue(void)
 
   assert( __IS_SAME_(studs, STUDS, STUD_SIZE * sizeof *studs) );
 
-  DestroyLinkQueue(q);
+  lqu_destroy(q);
 }
 
 signed main(int argc, char const *argv[])

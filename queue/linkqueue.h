@@ -1,7 +1,7 @@
 /**
  * @author: waingxiaoqiang
  * @create-date: 2020-05-02
- * @modify-date: 2020-05-15
+ * @modify-date: 2020-05-26
  * @version: 0.0.7
  * @description: LinkQueue Header File (slist-based)
  */
@@ -39,9 +39,9 @@ typedef struct LinkQueue
 
 } LinkQueue;
 
-struct LinkQueue * CreateLinkQueue(int dataisze);
+struct LinkQueue * lqu_create(int datasize);
 
-void DestroyLinkQueue(struct LinkQueue *);
+void lqu_destroy(struct LinkQueue *);
 
 #endif
 /* ========================== LinkQueue End ========================= */

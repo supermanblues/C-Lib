@@ -19,7 +19,7 @@ const void * lqu_back(struct LinkQueue *);
 int lqu_push(struct LinkQueue *, const void *);
 int lqu_pop(struct LinkQueue *, void *);
 
-struct LinkQueue * CreateLinkQueue(int datasize)
+struct LinkQueue * lqu_create(int datasize)
 {
   struct LinkQueue *ptr = NULL;
 
@@ -92,7 +92,7 @@ int lqu_pop(struct LinkQueue *ptr, void *data)
   return lst->pop_front(lst, data);
 }
 
-void DestroyLinkQueue(struct LinkQueue *ptr)
+void lqu_destroy(struct LinkQueue *ptr)
 {
   slist_destroy(ptr->lst);  
   free(ptr);
