@@ -392,7 +392,7 @@ static void levelOrder(struct TreeNode *root, visit visit)
   struct LinkQueue *qu = NULL;
   struct TreeNode *cur = NULL; 
 
-  qu = CreateLinkQueue(sizeof(struct TreeNode *));
+  qu = lqu_create(sizeof(struct TreeNode *));
   if (qu == NULL)
     return;
 
@@ -410,7 +410,7 @@ static void levelOrder(struct TreeNode *root, visit visit)
       qu->push(qu, &cur->right);
   }
 
-  DestroyLinkQueue(qu);
+  lqu_destroy(qu);
 }
 
 #ifdef BST_TRAVEL_ITER_IMPL
