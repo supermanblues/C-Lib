@@ -20,7 +20,7 @@ void test_SqQueue(void)
   int data[ DATA_SIZE ];
   struct SqQueue *q = NULL;
 
-  q = CreateSqQueue(sizeof(int), DATA_SIZE);
+  q = qu_create(sizeof(int), DATA_SIZE);
   if (q == NULL)
   {
     fprintf(stderr, "The q create failed. GoodBye!\n");
@@ -45,7 +45,7 @@ void test_SqQueue(void)
   assert( q->size(q) == 0 );
   assert( __IS_SAME_(data, DATA, DATA_SIZE * sizeof(*DATA)) );
 
-  DestroyQueue(q);
+  qu_destroy(q);
 }
 
 void test_LinkQueue(void)

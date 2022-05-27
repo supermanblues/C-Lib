@@ -1,8 +1,8 @@
 /**
  * @author: waingxiaoqiang
  * @create-date: 2020-04-25
- * @modify-date: 2020-05-15
- * @version: 0.0.5
+ * @modify-date: 2020-05-27
+ * @version: 1.0.0
  * @description: Sequence Queue Implementation File
  */
 #include <stdlib.h>
@@ -26,7 +26,7 @@ int qu_pop(struct SqQueue *, void *);
 
 int qu_clear(struct SqQueue *);
 
-struct SqQueue * CreateSqQueue(const int datasize, const size_t capacity)
+struct SqQueue * qu_create(int datasize, size_t capacity)
 {
   struct SqQueue *ptr = NULL;
   
@@ -125,7 +125,7 @@ int qu_clear(struct SqQueue *ptr)
   return 0;
 }
 
-void DestroyQueue(struct SqQueue *ptr)
+void qu_destroy(struct SqQueue *ptr)
 {
   free(ptr->base);
 }

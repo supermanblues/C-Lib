@@ -1,8 +1,8 @@
 /**
  * @author: waingxiaoqiang
  * @create-date: 2020-04-25
- * @modify-date: 2020-05-15
- * @version: 0.0.5
+ * @modify-date: 2020-05-27
+ * @version: 1.0.0
  * @description: Sequence Queue Header File
  */
 /* ========================== SqQueue Start ========================= */
@@ -43,8 +43,8 @@ typedef struct SqQueue
 
 } SqQueue;
 
-struct SqQueue * CreateSqQueue(const int datasize, const size_t capacity);
+struct SqQueue * qu_create(int datasize, size_t capacity);
 
-void DestroyQueue(struct SqQueue *);
+void qu_destroy(struct SqQueue *);
 /* ========================== SqQueue End ========================= */
 #endif
