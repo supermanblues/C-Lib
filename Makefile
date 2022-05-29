@@ -1,3 +1,5 @@
+.DEFAULT_GOAL=integration-test
+
 CC=clang
 TARGET=mytools
 OBJS=main.o
@@ -8,14 +10,14 @@ LIBS=-larray -lslist -lllist \
 CFLAGS+=-std=c11 -g -Wall -O2
 
 $(TARGET):$(OBJS)
-	$(CC) $^ -o $@ $(LIBS)
+	$(CC) -o $@ $^ $(LIBS)
 
 clean:
 	$(RM) *.o $(TARGET)
 
 test:
 	$(MAKE) clean
-	$(MAKE)
+	$(MAKE) $(TARGET)
 	./$(TARGET)
 
 install:

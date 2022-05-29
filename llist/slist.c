@@ -23,8 +23,14 @@ void slist_reverse(struct SLIST *);
 
 #if __clang__
 void slist_travel(struct SLIST *, visit);
+
+void slist_accumulate(struct SLIST *, void *, callback);
+
 #else
 void slist_travel(struct SLIST *, visit *);
+
+void slist_accumulate(struct SLIST *, void *, callback *);
+
 #endif
 
 struct SLIST * slist_create(int datasize)
@@ -52,8 +58,9 @@ struct SLIST * slist_create(int datasize)
   ptr->push_back  = slist_push_back;
   ptr->pop_front  = slist_pop_front;
 
-  ptr->travel  = slist_travel;
-  ptr->reverse = slist_reverse;
+  ptr->travel     = slist_travel;
+  ptr->reverse    = slist_reverse;
+  ptr->accumulate = slist_accumulate;
 
   return ptr;
 }
@@ -158,16 +165,32 @@ int slist_pop_front(struct SLIST *ptr, void *data)
 }
 
 void slist_travel(struct SLIST *ptr,
-                 #if __clang__
+                #if __clang__
                   visit visit)
-                 #else
+                #else
                   visit *visit)
-                 #endif
+                #endif
 {
   struct SListNode *cur = NULL;
 
   __SLIST_FOR_EACH_(cur, ptr->head)
     visit(cur->data);
+
+  return;
+}
+
+void slist_accumulate(struct SLIST *ptr,
+                      void *res,
+                    #if __clang__
+                      callback callback)
+                    #else
+                      callback *callback)
+                    #endif
+{
+  struct SListNode *cur = NULL;
+
+  __SLIST_FOR_EACH_(cur, ptr->head)
+    callback(0, res, cur->data);
 
   return;
 }

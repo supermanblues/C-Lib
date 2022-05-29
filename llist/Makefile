@@ -1,3 +1,5 @@
+.DEFAULT_GOAL=test
+
 CC=clang
 TARGET=main
 OBJS=slist.o llist.o main.o
@@ -5,14 +7,14 @@ LIBS=-ltest-utils
 CFLAGS+=-std=c11 -g -Wall -O2
 
 $(TARGET):$(OBJS)
-	$(CC) $^ -o $@ $(LIBS)
+	$(CC) -o $@ $^ $(LIBS)
 
 clean:
 	$(RM) *.o *.a *.so $(TARGET)
 
 test:
 	@$(MAKE) clean
-	@$(MAKE)
+	@$(MAKE) $(TARGET)
 	@./$(TARGET)
 
 package:

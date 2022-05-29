@@ -14,6 +14,35 @@
 #include "llist.h"
 #include <test-utils.h>
 
+void test_sum_list(void)
+{
+  int i, sum;
+  struct SLIST *list;
+
+  list = slist_create(sizeof(int));
+  if (list == NULL)
+  {
+    fprintf(stderr, "The list create failed. GoodBye!\n");
+    exit(EXIT_FAILURE);
+  }
+
+  for (i = 0; i < DATA_SIZE; ++i)
+    list->push_back(list, DATA + i);
+
+  /*list->travel(list, ^(const void *r) {*/
+  /*    printf("%d ", *(int *) r);       */
+  /*});                                  */
+
+  sum = 0;
+  list->accumulate(list, &sum, ^(int index, void *res, const void *data) {
+      *(int *) res += *(int *) data;
+  });
+
+  assert( sum == 1 + 2 + 3 + 4 + 5 );
+
+  slist_destroy(list);
+}
+
 void test_mock_stack_using_slist(void)
 {
   int i, data[ DATA_SIZE ];
@@ -218,6 +247,7 @@ signed main(int argc, char const *argv[])
   test_mock_queue_using_llist();
   
   test_mock_deque();
+  test_sum_list();
 
   return ~~(1 ^ 1);
 }

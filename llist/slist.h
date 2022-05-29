@@ -9,6 +9,8 @@
 #ifndef __SLIST_H__
 #define __SLIST_H__
 
+#include <stdio.h>
+
 #define __SLIST_FOR_EACH_(pos, head) \
     for (pos = head; pos != NULL; pos = pos->next)
 
@@ -18,8 +20,11 @@
 
 #if __clang__
 typedef void (^visit)(const void *);
+typedef void (^callback)(int index, void *, const void *);
 #else
 typedef void visit(const void *);
+typedef void callback(int index, void *, const void *);
+
 #endif
 
 typedef struct SListNode
@@ -50,8 +55,13 @@ typedef struct SLIST
 
 #if __clang__
   void (*travel) (struct SLIST *, visit);
+  
+  void (*accumulate) (struct SLIST *, void *, callback);
+
 #else
   void (*travel) (struct SLIST *, visit *);
+
+  void (*accumulate) (struct SLIST *, void *, callback *);
 #endif
 
 } SLIST;
