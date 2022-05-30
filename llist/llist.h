@@ -9,6 +9,8 @@
 #ifndef __LLIST_H__
 #define __LLIST_H__
 
+#include <stdio.h>
+
 #define LLIST_HEAD_INIT(name) \
     name = (struct DuLNode) { .prev = &(name), .next = &(name) }
 

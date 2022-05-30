@@ -9,6 +9,8 @@
 #ifndef __ARRAY_H_
 #define __ARRAY_H_
 
+#include <stdio.h>
+
 #if __clang__
 
 typedef int (^compar)(const void *, const void *);
