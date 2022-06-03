@@ -1,7 +1,7 @@
 CC=clang
 TARGET=main
-OBJS=bst.o main.o 
-LIBS=-larray -llinkstack -llinkqueue -lslist -ltest-utils
+OBJS=../common/test-utils.o bst.o main.o 
+LIBS=-larray -llinkstack -llinkqueue -lslist
 CFLAGS+=-std=c11 -g -Wall -O2
 
 default:test
@@ -14,7 +14,7 @@ bst.o:bst.c
 	$(CC) $(CFLAGS)   -c -o $@ $^
 
 clean:
-	$(RM) *.o *.a *.so $(TARGET)
+	$(RM) (OBJS) *.a *.so $(TARGET)
 
 test:
 	@$(MAKE) clean

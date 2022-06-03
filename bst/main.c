@@ -10,13 +10,13 @@
 #include <assert.h>
 
 #include "bst.h"
-#include <test-utils.h>
+#include "../common/test-utils.h"
 
 void test(void)
 {
   int i, x;
   const int data[] = { 0, 3, 4, 5, 7, 9, 11, 19, 32, 57 };
-  
+
   struct BST *bst1 = NULL;
   struct BST *bst2 = NULL;
   const struct Student *s = NULL;
