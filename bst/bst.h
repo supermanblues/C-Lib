@@ -5,9 +5,11 @@
  * @version: 0.1.0
  * @description: Binary Search Tree Header File
  */
-/* ========================== BST Start ========================= */
+/* ========================== Binary Search Tree Start ========================= */
 #ifndef __BST_H__
 #define __BST_H__
+
+#include <stdio.h>
 
 typedef enum { BST_TRAVEL_LEVELORDER,
                BST_TRAVEL_PREORDER,
@@ -96,4 +98,4 @@ struct BST * bst_create(int datasize, compar *, visit *);
 void bst_destroy(struct BST *);
 
 #endif
-/* ========================== BST End ========================= */
+/* ========================== Binary Search Tree End  ========================= */

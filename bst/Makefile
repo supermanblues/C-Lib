@@ -4,6 +4,8 @@ OBJS=bst.o main.o
 LIBS=-larray -llinkstack -llinkqueue -lslist -ltest-utils
 CFLAGS+=-std=c11 -g -Wall -O2
 
+default:test
+
 $(TARGET):$(OBJS)
 	$(CC) $^ -o $@ $(LIBS)
 
@@ -16,7 +18,7 @@ clean:
 
 test:
 	@$(MAKE) clean
-	@$(MAKE)
+	@$(MAKE) $(TARGET)
 	@./$(TARGET)
 
 package:
