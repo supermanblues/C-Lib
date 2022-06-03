@@ -14,7 +14,7 @@ bst.o:bst.c
 	$(CC) $(CFLAGS)   -c -o $@ $^
 
 clean:
-	$(RM) (OBJS) *.a *.so $(TARGET)
+	$(RM) $(OBJS) *.a *.so $(TARGET)
 
 test:
 	@$(MAKE) clean
