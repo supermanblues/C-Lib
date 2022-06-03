@@ -1,8 +1,8 @@
 /**
  * @author: waingxiaoqiang
  * @create-date: 2020-05-13
- * @modify-date: 2020-05-16
- * @version: 0.0.3
+ * @modify-date: 2020-06-03
+ * @version: 1.0.0
  * @description: Dynamic Array Implementation File
  */
 #include <stdlib.h>
@@ -16,12 +16,12 @@ void arr_clear(struct ARRAY *);
 size_t arr_size(struct ARRAY *);
 
 void * arr_get(struct ARRAY *, int index);
+int arr_set(struct ARRAY *, int index, const void *data);
 void * arr_front(struct ARRAY *);
 void * arr_back(struct ARRAY *);
 
-
 int arr_insert(struct ARRAY *, int, const void *);
-int arr_delete(struct ARRAY *, int);
+int arr_remove(struct ARRAY *, int);
 int arr_delete_row(struct ARRAY *, int);
 
 int arr_push_front(struct ARRAY *, const void *);
@@ -77,12 +77,13 @@ struct ARRAY * arr_create(size_t init_capacity, int datasize)
   ptr->size  = arr_size;
 
   ptr->get   = arr_get;
+  ptr->set   = arr_set;
   ptr->front = arr_front;
   ptr->back  = arr_back;
 
   ptr->search     = arr_search;
   ptr->insert     = arr_insert;
-  ptr->delete     = arr_delete;
+  ptr->remove     = arr_remove;
   ptr->delete_row = arr_delete_row;
 
   ptr->push_front = arr_push_front;
@@ -149,6 +150,15 @@ void * arr_get(struct ARRAY *ptr, int index)
     return NULL;
 
   return (ptr->base + index * ptr->datasize);
+}
+
+int arr_set(struct ARRAY *ptr, int index, const void *data)
+{
+  if (index < 0 || index >= ptr->length)
+      return -1; /* 位置不合法 */
+
+  __COPY_DATA_(ptr->base + index * ptr->datasize, data, ptr->datasize);
+  return 0;
 }
 
 void * arr_front(struct ARRAY *ptr)
@@ -231,7 +241,7 @@ int arr_push_back(struct ARRAY *ptr, const void *data)
   return arr_insert(ptr, ptr->length, data);
 }
 
-int arr_delete(struct ARRAY *ptr, int index)
+int arr_remove(struct ARRAY *ptr, int index)
 { 
   int i;
   void *cur;
@@ -272,12 +282,12 @@ int arr_delete_row(struct ARRAY *ptr, int index)
 
 int arr_pop_front(struct ARRAY *ptr)
 {
-  return arr_delete(ptr, 0);
+  return arr_remove(ptr, 0);
 }
 
 int arr_pop_back(struct ARRAY *ptr)
 {
-  return arr_delete(ptr, ptr->length - 1);
+  return arr_remove(ptr, ptr->length - 1);
 }
 
 void arr_fill(struct ARRAY *ptr, const void *data)

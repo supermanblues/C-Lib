@@ -11,7 +11,7 @@
 #include <assert.h>
 
 #include "array.h"
-#include <test-utils.h>
+#include "../common/test-utils.h"
 
 static int cmp_by_stud_math_desc(const void * a, const void *b)
 {
@@ -101,6 +101,18 @@ void test_basic(void)
     arr->pop_back(arr);
 
   assert( arr->empty(arr) );
+  arr_destroy(arr);
+
+  arr = arr_create(3, sizeof(int));
+  if (arr == NULL)
+      exit(EXIT_FAILURE);
+
+  arr->length = arr->capacity;
+  i = 321, arr->set(arr, arr->length - 1, &i);
+
+  assert( *(int *) arr->get(arr, arr->length - 1) == i );
+  assert( *(int *) arr->back(arr) == i );
+
   arr_destroy(arr);
 }
 
@@ -302,9 +314,9 @@ void test_array_2d(void)
 signed main(int argc, char const *argv[])
 {
   test_basic();
-  test_insert();
+  test_insert();     
   test_findAndSort();
-  test_array_2d();
+  test_array_2d();   
 
   return ~~(0 ^ 0);
 }

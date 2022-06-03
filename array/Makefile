@@ -1,18 +1,20 @@
 CC=clang
 TARGET=main
-OBJS= array.o main.o
-LIBS=-ltest-utils
-CFLAGS+=-std=c11 -g -Wall -O2
+OBJS= ../common/test-utils.o array.o main.o
+#LIBS=-ltest-utils
+CFLAGS+=-std=c11 -g -Wall -O0
+
+default:test
 
 $(TARGET):$(OBJS)
-	$(CC) $^ -o $@ $(LIBS)
+	$(CC) -o $@ $^
 
 clean:
-	$(RM) *.o *.a *.so $(TARGET)
+	$(RM) $(OBJS) *.a *.so $(TARGET)
 
 test:
 	@$(MAKE) clean
-	@$(MAKE)
+	@$(MAKE) $(TARGET)
 	@./$(TARGET)
 
 package:

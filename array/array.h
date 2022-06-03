@@ -1,8 +1,8 @@
 /*
  * @author: waingxiaoqiang
  * @create-date: 2020-05-13
- * @modify-date: 2020-05-23
- * @version: 0.0.5
+ * @modify-date: 2020-06-03
+ * @version: 1.0.0
  * @description: Dynamic Array Header File
  */
 /* ========================== Dynamic Array Start ========================= */
@@ -53,6 +53,8 @@ typedef struct ARRAY
   /** 返回数组中第 index (0-based) 个位置元素的内存地址 */
   void * (*get) (struct ARRAY *, int);
 
+  int (*set) (struct ARRAY *, int, const void *);
+
   /** 返回数组中第一个位置元素的内存地址 */
   void * (*front) (struct ARRAY *);
   
@@ -69,7 +71,7 @@ typedef struct ARRAY
    * 删除数组中第 index (0-based) 个位置的元素
    * @return -1: index不合法; 0: 删除成功;
    **/
-  int (*delete) (struct ARRAY *, int index);
+  int (*remove) (struct ARRAY *, int index);
 
   /** 二维数组删除一行 */ 
   int (*delete_row) (struct ARRAY *, int index);
