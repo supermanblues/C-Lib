@@ -1,4 +1,4 @@
-.DEFAULT_GOAL=integration-test
+defalult:integration-test
 
 CC=clang
 TARGET=mytools
@@ -7,7 +7,7 @@ LIBS=-larray -lslist -lllist \
 		-lstack -llinkstack -lqueue -llinkqueue \
 		-lbst -lset -lunion_find  -ltrie \
 		-lsort -lcommon -ltest-utils
-CFLAGS+=-std=c11 -g -Wall -O2
+CFLAGS+=-std=c11 -g -Wall -O0
 
 $(TARGET):$(OBJS)
 	$(CC) -o $@ $^ $(LIBS)

@@ -1,7 +1,9 @@
 CC=clang
 TARGET=main
 OBJS=common.o test-utils.o main.o
-CFLAGS+=-std=c11 -g -Wall -O2
+CFLAGS+=-std=c11 -g -Wall -O0
+
+default:test
 
 ${TARGET}:$(OBJS)
 	$(CC) $^ -o $@
@@ -11,7 +13,7 @@ clean:
 
 test:
 	@$(MAKE) clean
-	@$(MAKE)
+	@$(MAKE) $(TARGET)
 	@./$(TARGET)
 
 package:
