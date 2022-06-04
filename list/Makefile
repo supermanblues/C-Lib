@@ -1,22 +1,24 @@
-.DEFAULT_GOAL=test
-
-CC=clang
-TARGET=main
-OBJS=slist.o llist.o main.o
-LIBS=-ltest-utils
+CC:=clang
+TARGET:=main
+OBJS:=$(patsubst %.c, %.o, $(wildcard ../common/test*.c *.c))
 CFLAGS+=-std=c11 -g -Wall -O2
 
+default:test
+
 $(TARGET):$(OBJS)
-	$(CC) -o $@ $^ $(LIBS)
+	$(CC) -o $@ $^
 
+.PHONY: clean
 clean:
-	$(RM) *.o *.a *.so $(TARGET)
+	$(RM) $(OBJS) *.a *.so $(TARGET)
 
+.PHONY: test
 test:
 	@$(MAKE) clean
 	@$(MAKE) $(TARGET)
 	@./$(TARGET)
 
+.PHONY: package
 package:
 	@$(MAKE) test
 	
@@ -25,6 +27,7 @@ package:
 	$(CC) -shared -fpic -o libslist.so slist.o
 	$(CC) -shared -fpic -o libllist.so llist.o
 
+.PHONY: install
 install:
 	$(MAKE) package
 

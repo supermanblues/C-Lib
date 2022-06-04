@@ -1,4 +1,3 @@
-defalult:integration-test
 
 CC=clang
 TARGET=mytools
@@ -8,6 +7,9 @@ LIBS=-larray -lslist -lllist \
 		-lbst -lset -lunion_find  -ltrie \
 		-lsort -lcommon -ltest-utils
 CFLAGS+=-std=c11 -g -Wall -O0
+
+.PHONY: integration-test
+defalult:integration-test
 
 $(TARGET):$(OBJS)
 	$(CC) -o $@ $^ $(LIBS)
@@ -24,7 +26,7 @@ install:
 	$(MAKE) -C common install
 	$(MAKE) -C sort install
 	$(MAKE) -C array install
-	$(MAKE) -C llist install
+	$(MAKE) -C list install
 	$(MAKE) -C stack install
 	$(MAKE) -C queue install
 	$(MAKE) -C bst install
@@ -36,7 +38,7 @@ integration-test:
 	$(MAKE) -C common test
 	$(MAKE) -C sort test
 	$(MAKE) -C array test
-	$(MAKE) -C llist test
+	$(MAKE) -C list test
 	$(MAKE) -C stack test
 	$(MAKE) -C queue test
 	$(MAKE) -C bst test

@@ -9,6 +9,8 @@
 #ifndef __LINKSTACK_H__
 #define __LINKSTACK_H__
 
+#include <stdio.h>
+
 typedef struct LinkStack
 {
   struct SLIST *lst;

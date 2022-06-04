@@ -8,7 +8,7 @@
 #include <stdlib.h>
 
 #include "linkqueue.h"
-#include "../llist/slist.h"
+#include "../list/slist.h"
 
 int lqu_empty(struct LinkQueue *);
 size_t lqu_size(struct LinkQueue *);

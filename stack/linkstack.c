@@ -8,7 +8,7 @@
 #include <stdlib.h>
 
 #include "linkstack.h"
-#include <slist.h>
+#include "../list/slist.h"
 
 int lstk_empty(struct LinkStack *);
 size_t lstk_size(struct LinkStack *);

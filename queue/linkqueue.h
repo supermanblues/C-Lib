@@ -9,6 +9,8 @@
 #ifndef __LINKQUEUE_H__
 #define __LINKQUEUE_H__
 
+#include <stdio.h>
+
 typedef struct LinkQueue
 {
   struct SLIST *lst;
