@@ -1,7 +1,6 @@
 CC:=clang
 TARGET:=main
 OBJS:=$(patsubst %.c, %.o, $(wildcard ../common/test*.c *.c))
-#LIBS=-ltest-utils
 CFLAGS+=-std=c11 -g -Wall -O0
 
 default:test

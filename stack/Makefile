@@ -1,28 +1,34 @@
-CC=clang
-TARGET=main 
-OBJS=stack.o linkstack.o main.o
-LIBS=-larray -lslist -ltest-utils
-CFLAGS+=-std=c11 -g -Wall -O2
+CC:=clang
+TARGET:=main 
+OBJS:=stack.o linkstack.o main.o
+OBJS:=$(patsubst %.c, %.o, \
+	  $(wildcard ../array/array.c ../list/slist.c ../common/test*.c *.c))
+CFLAGS+=-std=c11 -g -Wall -O0
+
+default:test
 
 $(TARGET):$(OBJS)
-	$(CC) $^ -o $@ $(LIBS)
+	$(CC) -o $@ $^
 
 clean:
-	$(RM) *.o *.a *.so $(TARGET)
+	$(RM) $(OBJS) *.i *.a *.so $(TARGET)
 
+.PHONY:test
 test:
 	@$(MAKE) clean
-	@$(MAKE)
+	@$(MAKE) $(TARGET)
 	@./$(TARGET)
 
+.PHONY:package
 package:
 	@$(MAKE) test
 	
 	$(AR) -r libstack.a stack.o
 	$(AR) -r liblinkstack.a linkstack.o
 	$(CC) -shared -fpic -o libstack.so stack.o ../array/array.c
-	$(CC) -shared -fpic -o liblinkstack.so linkstack.o ../llist/slist.c
+	$(CC) -shared -fpic -o liblinkstack.so linkstack.o ../list/slist.c
 
+.PHONY:install
 install:
 	@$(MAKE) package
 
