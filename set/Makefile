@@ -1,26 +1,32 @@
-CC=clang
-TARGET=main
-OBJS=set.o main.o
-LIBS=-lbst -llinkqueue -lslist -ltest-utils
-CFLAGS+=-std=c11 -g -Wall -O2
+CC:=clang
+TARGET:=main
+OBJS:=$(patsubst %.c, %.o, $(wildcard *.c))
+LIBS:=-lbst -llinkqueue -lslist -ltest-utils
+CFLAGS+=-std=c11 -g -Wall -O0
+
+default:test
 
 $(TARGET):$(OBJS)
-	$(CC) $^ -o $@ $(LIBS)
+	$(CC) -o $@ $^ $(LIBS)
 
+.PHONY:clean
 clean:
-	$(RM) *.o *.a *.so $(TARGET)
+	$(RM) $(OBJS) *.i *.a *.so $(TARGET)
 
+.PHONY:test
 test:
 	@$(MAKE) clean
-	@$(MAKE)
+	@$(MAKE) $(TARGET)
 	@./$(TARGET)
 
+.PHONY:package
 package:
 	@$(MAKE) test
 	
 	$(AR) -r libset.a set.o
-	$(CC) -shared -fpic -o libset.so set.o ../bst/bst.c ../queue/linkqueue.c ../llist/slist.c
+	$(CC) -shared -fpic -o libset.so set.o ../bst/bst.c ../queue/linkqueue.c ../list/slist.c
 
+.PHONY:install
 install:
 	$(MAKE) package
 
