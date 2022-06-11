@@ -2,7 +2,7 @@
  * @author: waingxiaoqiang
  * @create-date: 2020-05-02
  * @modify-date: 2020-05-15
- * @version: 0.0.7
+ * @version: 0.0.8
  * @description: LinkStack Header File (slist-based)
  */
 /* ========================== LinkStack Start ========================= */
@@ -26,9 +26,8 @@ typedef struct LinkStack
 
 } LinkStack;
 
-struct LinkStack * CreateLinkStack(int datasize);
+struct LinkStack * lstk_create(int datasize);
 
-void DestroyLinkStack(struct LinkStack *);
-
+void lstk_destroy(struct LinkStack *);
 #endif
 /* ========================== LinkStack End ========================= */

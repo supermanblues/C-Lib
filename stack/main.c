@@ -12,7 +12,7 @@
 
 #include "stack.h"
 #include "linkstack.h"
-#include <test-utils.h>
+#include "../common/test-utils.h"
 
 void test_SqStack(void)
 {
@@ -53,7 +53,7 @@ void test_LinkStack(void)
   struct Student studs[STUD_SIZE];
   struct LinkStack *st = NULL;
 
-  st = CreateLinkStack(sizeof *STUDS);
+  st = lstk_create(sizeof *STUDS);
   if (st == NULL)
   {
     fprintf(stderr, "The st create failed. GoodBye!\n");
@@ -80,7 +80,7 @@ void test_LinkStack(void)
   reverse(studs, STUD_SIZE, sizeof(struct Student));
   assert( __IS_SAME_(studs, STUDS, STUD_SIZE * sizeof(struct Student)) );
 
-  DestroyLinkStack(st);
+  lstk_destroy(st);
 }
 
 signed main(int argc, char const *argv[])

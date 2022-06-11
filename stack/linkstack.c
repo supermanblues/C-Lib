@@ -19,7 +19,7 @@ const void * lstk_peek(struct LinkStack *);
 int lstk_push(struct LinkStack *, const void *);
 int lstk_pop(struct LinkStack *, void *);
 
-struct LinkStack * CreateLinkStack(int datasize)
+struct LinkStack * lstk_create(int datasize)
 {
   struct LinkStack *ptr = NULL;
 
@@ -80,7 +80,7 @@ int lstk_pop(struct LinkStack *ptr, void *data)
   return lst->pop_front(lst, data);
 }
 
-void DestroyLinkStack(struct LinkStack *ptr)
+void lstk_destroy(struct LinkStack *ptr)
 {
   slist_destroy(ptr->lst);  
   free(ptr);
